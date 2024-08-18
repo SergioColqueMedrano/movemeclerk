@@ -8,6 +8,8 @@ import * as WebBrowser from "expo-web-browser"
 import { useOAuth } from '@clerk/clerk-expo';
 import { Button } from '../../../components/Button';
 
+import * as Liking from "expo-linking"
+
 
 WebBrowser.maybeCompleteAuthSession()
 
@@ -22,7 +24,9 @@ export default function SingIn() {
     try{
       setIsLoding(true)
 
-      const oAuthFlow = await googleOAuth.startOAuthFlow()
+      //const redirectUrl = Liking.createURL("/")
+
+      const oAuthFlow = await googleOAuth.startOAuthFlow({  })
 
       if(oAuthFlow.authSessionResult?.type === "success"){
         if(oAuthFlow.setActive){
