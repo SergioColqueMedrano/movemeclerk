@@ -5,6 +5,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function Home() {
     const {user} = useUser();
@@ -24,20 +25,32 @@ export default function Home() {
 
             {/* Aquí añadimos los botones en la parte central */}
             <View style={styles.centralButtonsContainer}>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={[styles.button, styles.selectedButton]}>
                     <Text style={styles.buttonText}>Hipertrofia</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.selectedButton]}>
+                <TouchableOpacity style={[styles.button]}>
                     <Text style={styles.buttonText}>Definición</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button}>
                     <Text style={styles.buttonText}>Resistencia</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>Fuerza</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button]}>
+                    <Text style={styles.buttonText}>Definición Muscular</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>Resistencia Muscular</Text>
+                </TouchableOpacity>
+                <TouchableOpacity >
+                    <AntDesign name="arrowleft" size={24} color="green" />
+                </TouchableOpacity>
             </View>
 
             <View style={styles.footer}> {/*Falta las de cada boton y que cambie de color dependiendo de donde se encuentra */}
                 <TouchableOpacity >
-                    <Entypo name="home" size={24} color="white" />
+                    <Entypo name="home" size={24} color="green" />
                 </TouchableOpacity>
                 <TouchableOpacity >
                     <FontAwesome5 name="dumbbell" size={24} color="white" />
@@ -92,6 +105,7 @@ const styles = StyleSheet.create({
     },
     centralButtonsContainer: {
         justifyContent: "flex-start",
+        padding: 30,
         alignItems: "center",
         height: 665,
         backgroundColor: "#121214",
