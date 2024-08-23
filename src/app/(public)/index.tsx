@@ -54,7 +54,7 @@ export default function SingIn() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://jz420zgh-3000.brs.devtunnels.ms/usuarios', {
+      const response = await fetch('https://jz420zgh-3000.brs.devtunnels.ms/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
