@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 
-export default function Home() {
+export default function Routine() {
     const {user} = useUser();
     const {signOut} = useAuth();
     const navigation = useNavigation();
@@ -26,24 +26,10 @@ export default function Home() {
 
             {/* Aquí añadimos los botones en la parte central */}
             <View style={styles.centralButtonsContainer}>
-                <TouchableOpacity style={[styles.button, styles.selectedButton]} onPress={() => router.replace("/(category)")}>
+                <TouchableOpacity style={[styles.button, styles.selectedButton]} onPress={() => router.replace("/(auth)")}>
                     <Text style={styles.buttonText}>HIPERTROFIA</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button]}>
-                    <Text style={styles.buttonText}>Definición</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Resistencia</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Fuerza</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.button]}>
-                    <Text style={styles.buttonText}>Definición Muscular</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Resistencia Muscular</Text>
-                </TouchableOpacity>
+                
                 <TouchableOpacity >
                     <AntDesign name="arrowleft" size={24} color="green" />
                 </TouchableOpacity>
@@ -124,9 +110,14 @@ const styles = StyleSheet.create({
         borderColor: "#00B37E", // Color del borde del botón seleccionado
     },
     buttonText: {
+        color: "#00B37E",
+        fontSize: 16,
+        fontWeight: "bold"
+    },
+    buttonNumber: {
         color: "#fff",
         fontSize: 16,
-        fontWeight: "bold",
+        fontWeight: "bold"
     },
     footer: {
         padding: 32,
