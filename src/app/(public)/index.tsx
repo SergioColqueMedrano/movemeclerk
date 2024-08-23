@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, } from 'react-native';
 import { router } from 'expo-router';
 
 import * as WebBrowser from "expo-web-browser"
@@ -9,6 +9,12 @@ import { useOAuth } from '@clerk/clerk-expo';
 import { Button } from '../../../components/Button';
 
 import * as Liking from "expo-linking"
+import ParallaxScrollView from '../../../components/ParallaxScrollView';
+import { ThemedView } from '../../../components/ThemedView';
+import DumbbellIcon from '../../../components/DumbbellIcon';
+import { ThemedText } from '../../../components/ThemedText';
+
+
 
 
 WebBrowser.maybeCompleteAuthSession()
@@ -40,24 +46,89 @@ export default function SingIn() {
       console.log(error)
       setIsLoding(false)
     }
-  }
+  } 
 
-
-  {/*useEffect(() => {
-    WebBrowser.warmUpAsync() No se puede en WEB!!!
-
-    return () => {
-      WebBrowser.coolDownAsync()
-    }
-  })*/}
   
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('https://jz420zgh-3000.brs.devtunnels.ms/usuarios', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      if (response.ok) {
+        const jsonResponse = await response.json();
+        // Manejar la respuesta del servidor aquí
+        Alert.alert('Éxito', 'Inicio de sesión exitoso');
+      } else {
+        Alert.alert('Error', 'Falló el inicio de sesión');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Ocurrió un error. Por favor intenta nuevamente.');
+    }
+  };
+
   
   return (
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#121214', dark: '#121214' }}
+      headerImage={
+        <Image
+          source={require("@/app/assets/image.png")}
+          style={styles.reactLogo}
+        />
+      }>
+      <View style={styles.container}>
+        <ThemedView style={styles.titleContainer}>
+          <DumbbellIcon />
+          <ThemedText type="title">App Gym</ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.stepContainer}>
+         <ThemedText type="subtitle">Acceder</ThemedText>
+        </ThemedView>
+        <TextInput
+          placeholder="E-mail"
+          placeholderTextColor="#ccc"
+          style={styles.input}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          placeholder="Contraseña"
+          placeholderTextColor="#ccc"
+          style={styles.input}
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Ingresar</Text>
+        </TouchableOpacity>
+      
+        <Button icon="logo-google" title="Entrar con Google" onPress={onGoogleSignIn} isLoading={isLoading} />
+     
+        <Text style={styles.linkText}>¿Has olvidado tu contraseña?</Text>
+      
+      </View>        
+
+        <TouchableOpacity>
+          <Text style={styles.linkText2}>¿No tienes cuenta? Registrate</Text>
+        </TouchableOpacity>   
+         
+    </ParallaxScrollView>
     
-    <View style={styles.container}>
-      <Text style={styles.title}>Entrar</Text>
-      <Button icon="logo-google" title="Entrar con Google" onPress={onGoogleSignIn} isLoading={isLoading} />
-    </View>
+    
   )
 }
 
@@ -85,8 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1a1a1a', // Fondo oscuro
-    padding: 20,
+    backgroundColor: '#000000', // Fondo oscuro
   },
   title: {
     fontSize: 24,
@@ -119,8 +189,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  linkText2: {
+    color: '#8f8f8f',         // Mantiene el color gris para el texto del enlace
+    textAlign: "center",      // Centra el texto horizontalmente
+    alignSelf: "center",      // Asegura que el texto esté centrado dentro de su contenedor
+    marginTop: 150,            // Mantén este margen si deseas un espacio por encima del texto
+  },
   linkText: {
-    color: '#8f8f8f',
-    marginTop: 10,
-  },
+    color: '#8f8f8f',         // Mantiene el color gris para el texto del enlace
+    textAlign: "left",
+    marginTop: 30,         // Mantén este margen si deseas un espacio por encima del texto
+  }
 });
