@@ -58,16 +58,17 @@ export default function SingIn() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          // Otras cabeceras que puedas necesitar
         },
         body: JSON.stringify({
           email: email,
           password: password,
         }),
       });
-
+  
       if (response.ok) {
         const jsonResponse = await response.json();
-        // Manejar la respuesta del servidor aquí
         Alert.alert('Éxito', 'Inicio de sesión exitoso');
       } else {
         Alert.alert('Error', 'Falló el inicio de sesión');
@@ -76,6 +77,7 @@ export default function SingIn() {
       Alert.alert('Error', 'Ocurrió un error. Por favor intenta nuevamente.');
     }
   };
+  
 
   
   return (
@@ -105,7 +107,7 @@ export default function SingIn() {
           onChangeText={setEmail}
         />
         <TextInput
-          placeholder="Contraseña"
+          placeholder="Password"
           placeholderTextColor="#ccc"
           style={styles.input}
           secureTextEntry
