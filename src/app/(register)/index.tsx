@@ -95,8 +95,17 @@ export default function SingIn() {
           <ThemedText type="title">App Gym</ThemedText>
         </ThemedView>
         <ThemedView style={styles.stepContainer}>
-         <ThemedText type="subtitle">Acceder</ThemedText>
+         <ThemedText type="subtitle">Crear Cuenta</ThemedText>
         </ThemedView>
+        <TextInput
+          placeholder="Nombre"
+          placeholderTextColor="#ccc"
+          style={styles.input}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
         <TextInput
           placeholder="E-mail"
           placeholderTextColor="#ccc"
@@ -113,20 +122,35 @@ export default function SingIn() {
           secureTextEntry
           value={password}
           onChangeText={setPassword}
-        />
+        /><TextInput
+        placeholder="Sexo"
+        placeholderTextColor="#ccc"
+        style={styles.input}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        placeholder="Fecha de Nacimiento"
+        placeholderTextColor="#ccc"
+        style={styles.input}
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Ingresar</Text>
+          <Text style={styles.buttonText}>Crear Cuenta</Text>
         </TouchableOpacity>
       
-        <Button icon="logo-google" title="Entrar con Google" onPress={onGoogleSignIn} isLoading={isLoading} />
+        <TouchableOpacity style={[styles.buttonblack, styles.selectedButton]} onPress={() =>  router.replace("/(public)")}>
+          <Text style={styles.buttonTextgreen}>Ya tienes cuenta</Text>
+        </TouchableOpacity>
      
-        <Text style={styles.linkText}>¿Has olvidado tu contraseña?</Text>
       
       </View>        
 
-        <TouchableOpacity onPress={() => router.replace("/(register)")}>
-          <Text style={styles.linkText2}>¿No tienes cuenta? Registrate</Text>
-        </TouchableOpacity>   
+         
          
     </ParallaxScrollView>
     
@@ -187,8 +211,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
   },
+  buttonblack: {
+    width: '100%',
+    padding: 15,
+    backgroundColor: '#121214', // Botón verde
+    borderRadius: 5,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  selectedButton: {
+    borderWidth: 2,
+    borderColor: "#00B37E", // Color del borde del botón seleccionado
+  },
   buttonText: {
     color: '#fff',
+    fontWeight: 'bold',
+  },
+  buttonTextgreen: {
+    color: '#00B37E',
     fontWeight: 'bold',
   },
   linkText2: {
