@@ -92,7 +92,7 @@ export default function SingIn() {
       <View style={styles.container}>
         <ThemedView style={styles.titleContainer}>
           <DumbbellIcon />
-          <ThemedText type="title">App Gym</ThemedText>
+          <ThemedText type="title">MoveMe</ThemedText>
         </ThemedView>
         <ThemedView style={styles.stepContainer}>
          <ThemedText type="subtitle">Crear Cuenta</ThemedText>

@@ -45,7 +45,7 @@ export default function Routine() {
                 <TouchableOpacity >
                     <FontAwesome5 name="history" size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity >
+                <TouchableOpacity onPress={() => router.replace("/(profile)")}>
                     <FontAwesome name="user-circle" size={24} color="white" />
                 </TouchableOpacity>
             </View>
