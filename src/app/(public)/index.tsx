@@ -14,7 +14,7 @@ import { ThemedView } from '../../../components/ThemedView';
 import DumbbellIcon from '../../../components/DumbbellIcon';
 import { ThemedText } from '../../../components/ThemedText';
 
-
+{/*TODO: VARIABLES DE ESTADO REDUX*/}
 
 
 WebBrowser.maybeCompleteAuthSession()
@@ -69,6 +69,7 @@ export default function SingIn() {
   
       if (response.ok) {
         const jsonResponse = await response.json();
+        router.replace("/(category)")
         Alert.alert('Éxito', 'Inicio de sesión exitoso');
       } else {
         Alert.alert('Error', 'Falló el inicio de sesión');

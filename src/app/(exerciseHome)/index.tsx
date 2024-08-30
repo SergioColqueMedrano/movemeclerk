@@ -7,8 +7,11 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Feather from '@expo/vector-icons/Feather';
+import Octicons from '@expo/vector-icons/Octicons';
 
-export default function Category() {
+export default function ExerciseHome() {
     const {user} = useUser();
     const {signOut} = useAuth();
     const navigation = useNavigation();
@@ -21,49 +24,68 @@ export default function Category() {
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>Hola,</Text>
                     <Text style={styles.name}>{user?.fullName}</Text>
-                    <Text style={styles.name}>{user?.fullName}</Text>
                 </View>
                 <ButtonExit icon="exit-outline" title="Salir" onPress={() => signOut()} />   {/*TODO: Deslogear cuentas de la aplicacion MOVEME*/}
             </View>
 
             {/* Aquí añadimos los botones en la parte central */}
             <View style={styles.centralButtonsContainer}>
-                <TouchableOpacity style={[styles.button, styles.selectedButton]} onPress={() => router.replace("/(auth)")}>
-                    <Text style={styles.buttonText}>HIPERTROFIA</Text>
+               
+                 <View style={styles.button}>                    
+                    <Text style={styles.buttonNumber}>Ejercicio 1</Text>
+                    <View style={styles.div}>
+                        <TouchableOpacity>
+                            <Octicons name="pencil" size={24} color="white" />
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Entypo name="cross" size={24} color="white" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.button}>                    
+                    <Text style={styles.buttonNumber}>Ejercicio 2</Text>
+                    <View style={styles.div}>
+                        <TouchableOpacity>
+                            <Octicons name="pencil" size={24} color="white" />
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Entypo name="cross" size={24} color="white" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.button}>                    
+                    <Text style={styles.buttonNumber}>Ejercicio 3</Text>
+                    <View style={styles.div}>
+                        <TouchableOpacity>
+                            <Octicons name="pencil" size={24} color="white" />
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Entypo name="cross" size={24} color="white" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                
+                
+                <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseCreate)")}>
+                <FontAwesome name="plus" size={30} color="white" />  
+                 <Text style={styles.buttonText}>Agregar Rutina</Text>
                 </TouchableOpacity>
-                <Text style={styles.text}>¿Cuántos días piensas entrenar por semana?</Text>
-                <TouchableOpacity style={[styles.button]} onPress={() => router.replace("/(routine)")}>
-                    <Text style={styles.buttonNumber}>UNO</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonNumber}>DOS</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonNumber}>TRES</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.button]}>
-                    <Text style={styles.buttonNumber}>CUATRO</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonNumber}>CINCO</Text>
-                </TouchableOpacity>
-                <TouchableOpacity >
-                    <AntDesign name="arrowleft" size={24} color="green" />
-                </TouchableOpacity>
+                
             </View>
 
             <View style={styles.footer}> {/*Falta las de cada boton y que cambie de color dependiendo de donde se encuentra */}
                 <TouchableOpacity >
-                    <Entypo name="home" size={24} color="green" />
+                    <Entypo name="home" size={24} color="white" />
+                </TouchableOpacity>
+                
+                <TouchableOpacity >
+                    <MaterialIcons name="bookmark-add" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity >
-                    <FontAwesome5 name="dumbbell" size={24} color="white" />
+                    <Feather name="list" size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity >
-                    <FontAwesome5 name="history" size={24} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.replace("/(profile)")}>
-                    <FontAwesome name="user-circle" size={24} color="white" />
+                <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
+                    <FontAwesome5 name="dumbbell" size={24} color="green" />
                 </TouchableOpacity>
             </View>
         </View>
@@ -114,11 +136,28 @@ const styles = StyleSheet.create({
         height: 665,
         backgroundColor: "#121214",
     },
+    div: {
+        flexDirection: 'row',
+    }, 
     button: {
+        flexDirection: 'row',
         width: 364,
         padding: 30,
         marginVertical: 8,
         backgroundColor: "#323238",
+        borderRadius: 6,
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    buttonGreen: {
+        flexDirection: 'row',
+        
+        justifyContent: "center", // Espacia uniformemente los botones
+        paddingHorizontal: 16,
+        width: 364,
+        padding: 30,
+        marginVertical: 8,
+        backgroundColor: "#00875F",
         borderRadius: 6,
         alignItems: "center",
     },
@@ -127,7 +166,8 @@ const styles = StyleSheet.create({
         borderColor: "#00B37E", // Color del borde del botón seleccionado
     },
     buttonText: {
-        color: "#00B37E",
+        color: "#fff",
+        padding: 15,
         fontSize: 16,
         fontWeight: "bold"
     },

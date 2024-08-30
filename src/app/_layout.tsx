@@ -7,6 +7,7 @@ import { tokenCache } from "./storage/tokenCache"
 
 const PUBLIC_CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY as string
 
+{/*TODO: Cambair a  Auth en la linea 20 */}
 function InitialLayout() {
     const { isSignedIn, isLoaded } = useAuth()
 
@@ -16,7 +17,7 @@ function InitialLayout() {
         if(!isLoaded) return
 
         if(isSignedIn) {
-            router.replace("/(auth)")
+            router.replace("/(exerciseHome)")  
         } else {
             router.replace("/(public)")
         }
