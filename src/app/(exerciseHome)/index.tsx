@@ -34,10 +34,10 @@ export default function ExerciseHome() {
                  <View style={styles.button}>                    
                     <Text style={styles.buttonNumber}>Ejercicio 1</Text>
                     <View style={styles.div}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => router.replace("/(exerciseEdit)")}>
                             <Octicons name="pencil" size={24} color="white" />
-                        </TouchableOpacity>
-                        <TouchableOpacity>
+                        </TouchableOpacity >
+                        <TouchableOpacity onPress={() => router.replace("/(exerciseDelete)")}>
                             <Entypo name="cross" size={24} color="white" />
                         </TouchableOpacity>
                     </View>

@@ -10,14 +10,14 @@ import { router } from "expo-router";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 
 
-export default function ExerciseCreate() {
+export default function ExerciseEdit() {
     const {user} = useUser();
     const {signOut} = useAuth();
     const navigation = useNavigation();
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textHeader}>Crear Ejercicio</Text>
+            <Text style={styles.textHeader}>Modificar Ejercicio</Text>
             
 
             {/* Aquí añadimos los botones en la parte central */}
@@ -39,7 +39,7 @@ export default function ExerciseCreate() {
                     autoCapitalize="none"
                 />
                <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseCreate)")}>
-                 <Text style={styles.buttonText}>Crear Ejercicio</Text>
+                 <Text style={styles.buttonText}>Editar Ejercicio</Text>
                 </TouchableOpacity>
                
                
