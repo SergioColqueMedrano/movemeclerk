@@ -10,14 +10,14 @@ import { router } from "expo-router";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 
 
-export default function ExerciseCreate() {
+export default function routineEdit() {
     const {user} = useUser();
     const {signOut} = useAuth();
     const navigation = useNavigation();
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textHeader}>Crear Ejercicio</Text>
+            <Text style={styles.textHeader}>Modifcar Rutina</Text>
             
 
             {/* Aquí añadimos los botones en la parte central */}
@@ -32,18 +32,18 @@ export default function ExerciseCreate() {
                     autoCapitalize="none"
                 />
                 <TextInput
-                    placeholder="Cargar Archivo Multimedia"
+                    placeholder="sexo"
                     placeholderTextColor="#ccc"
                     style={styles.input}
                     keyboardType="email-address"
                     autoCapitalize="none"
                 />
-               <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseCreate)")}>
-                 <Text style={styles.buttonText}>Crear Ejercicio</Text>
+               <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(routineHome)")}>
+                 <Text style={styles.buttonText}>Editar Rutina</Text>
                 </TouchableOpacity>
                
                
-               <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
+               <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
                     <AntDesign name="arrowleft" size={24} color="green" />
                 </TouchableOpacity>
 
@@ -59,11 +59,11 @@ export default function ExerciseCreate() {
                 <TouchableOpacity >
                     <MaterialIcons name="bookmark-add" size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity >
-                    <Feather name="list" size={24} color="white" />
+                <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
+                    <Feather name="list" size={24} color="green" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
-                    <FontAwesome5 name="dumbbell" size={24} color="green" />
+                    <FontAwesome5 name="dumbbell" size={24} color="white" />
                 </TouchableOpacity>
             </View>
         </View>

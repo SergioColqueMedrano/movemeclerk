@@ -10,42 +10,32 @@ import { router } from "expo-router";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 
 
-export default function ExerciseCreate() {
+export default function routineDelete() {
     const {user} = useUser();
     const {signOut} = useAuth();
     const navigation = useNavigation();
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textHeader}>Crear Ejercicio</Text>
+            <Text style={styles.textHeader}>Eliminar Rutina</Text>
             
 
             {/* Aquí añadimos los botones en la parte central */}
             <View style={styles.centralButtonsContainer}>
                 
-
-                <TextInput
-                    placeholder="Nombre Descripción"
-                    placeholderTextColor="#ccc"
-                    style={styles.input}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-                <TextInput
-                    placeholder="Cargar Archivo Multimedia"
-                    placeholderTextColor="#ccc"
-                    style={styles.input}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-               <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseCreate)")}>
-                 <Text style={styles.buttonText}>Crear Ejercicio</Text>
-                </TouchableOpacity>
+            <Text style={styles.Title}>¿Está seguro que desea eliminar esta rutina?</Text>
+                <View style={styles.buttons}>
+                    <TouchableOpacity style={styles.buttonRed} onPress={() => router.replace("/(routineHome)")}>
+                        <Text style={styles.buttonText}>Cancelar</Text>
+                     </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(routineHome)")}>
+                         <Text style={styles.buttonText}>Aceptar</Text>
+                    </TouchableOpacity>
+                </View>
+                
+                
                
                
-               <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
-                    <AntDesign name="arrowleft" size={24} color="green" />
-                </TouchableOpacity>
 
 
 
@@ -59,11 +49,11 @@ export default function ExerciseCreate() {
                 <TouchableOpacity >
                     <MaterialIcons name="bookmark-add" size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity >
-                    <Feather name="list" size={24} color="white" />
+                <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
+                    <Feather name="list" size={24} color="green" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
-                    <FontAwesome5 name="dumbbell" size={24} color="green" />
+                    <FontAwesome5 name="dumbbell" size={24} color="white" />
                 </TouchableOpacity>
             </View>
         </View>
@@ -77,6 +67,12 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start", 
         backgroundColor: "#202024",
     },
+    buttons: {
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        //gap
+
+    },
     backButton: {
         position: 'absolute',
         top: 40,  // Ajusta esta distancia según sea necesario
@@ -88,12 +84,22 @@ const styles = StyleSheet.create({
         
         justifyContent: "center", // Espacia uniformemente los botones
         paddingHorizontal: 16,
-        width: 364,
-        padding: 30,
-        marginVertical: 8,
+        width: 174,
+        height: 56,
         backgroundColor: "#00875F",
         borderRadius: 6,
-        alignItems: "center",
+        marginRight: 10, 
+    },
+    buttonRed: {
+        flexDirection: 'row',
+        
+        justifyContent: "center", // Espacia uniformemente los botones
+        paddingHorizontal: 16,
+        width: 174,
+        height: 56,
+        backgroundColor: "#870000",
+        borderRadius: 6,
+        marginRight: 10, 
     },
     header: {
         justifyContent: "space-between",
@@ -116,6 +122,13 @@ const styles = StyleSheet.create({
         color: '#fff',
         textAlign: "left",
     },
+    Title: {
+        margin: 30,
+        fontSize: 32,
+        color: '#fff',
+        textAlign: "center",
+        fontWeight: 'bold',
+    },
     name: {
         fontSize: 16,
         color: '#fff',
@@ -131,7 +144,7 @@ const styles = StyleSheet.create({
         borderColor: "#323238",
     },
     centralButtonsContainer: {
-        justifyContent: "flex-start",
+        justifyContent: "center", // Centra los elementos verticalmente
         padding: 30,
         alignItems: "center",
         height: 665,
@@ -153,6 +166,7 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
+        marginTop: 15, // Margen inferior para separar el título de los botones
     },
     buttonTextwhite: {
         color: "#fff",

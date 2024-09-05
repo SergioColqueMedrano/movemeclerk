@@ -11,7 +11,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
 import Octicons from '@expo/vector-icons/Octicons';
 
-export default function ExerciseHome() {
+export default function RoutineHome() {
     const {user} = useUser();
     const {signOut} = useAuth();
     const navigation = useNavigation();
@@ -32,18 +32,18 @@ export default function ExerciseHome() {
             <View style={styles.centralButtonsContainer}>
                
                  <View style={styles.button}>                    
-                    <Text style={styles.buttonNumber}>Ejercicio 1</Text>
+                    <Text style={styles.buttonNumber}>Rutina 1</Text>
                     <View style={styles.div}>
-                        <TouchableOpacity onPress={() => router.replace("/(exerciseEdit)")}>
+                        <TouchableOpacity onPress={() => router.replace("/(routineEdit)")}>
                             <Octicons name="pencil" size={24} color="white" />
                         </TouchableOpacity >
-                        <TouchableOpacity onPress={() => router.replace("/(exerciseDelete)")}>
+                        <TouchableOpacity onPress={() => router.replace("/(routineDelete)")}>
                             <Entypo name="cross" size={24} color="white" />
                         </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.button}>                    
-                    <Text style={styles.buttonNumber}>Ejercicio 2</Text>
+                    <Text style={styles.buttonNumber}>Rutina 2</Text>
                     <View style={styles.div}>
                         <TouchableOpacity>
                             <Octicons name="pencil" size={24} color="white" />
@@ -54,7 +54,7 @@ export default function ExerciseHome() {
                     </View>
                 </View>
                 <View style={styles.button}>                    
-                    <Text style={styles.buttonNumber}>Ejercicio 3</Text>
+                    <Text style={styles.buttonNumber}>Rutina 3</Text>
                     <View style={styles.div}>
                         <TouchableOpacity>
                             <Octicons name="pencil" size={24} color="white" />
@@ -66,9 +66,9 @@ export default function ExerciseHome() {
                 </View>
                 
                 
-                <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseCreate)")}>
+                <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(routineCreate)")}>
                 <FontAwesome name="plus" size={30} color="white" />  
-                 <Text style={styles.buttonText}>Agregar Ejercicio</Text>
+                 <Text style={styles.buttonText}>Agregar Rutina</Text>
                 </TouchableOpacity>
                 
             </View>
@@ -82,10 +82,10 @@ export default function ExerciseHome() {
                     <MaterialIcons name="bookmark-add" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
-                    <Feather name="list" size={24} color="white" />
+                    <Feather name="list" size={24} color="green" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
-                    <FontAwesome5 name="dumbbell" size={24} color="green" />
+                    <FontAwesome5 name="dumbbell" size={24} color="white" />
                 </TouchableOpacity>
             </View>
         </View>
