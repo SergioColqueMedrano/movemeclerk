@@ -38,6 +38,9 @@ export default function routineCreate() {
                     keyboardType="email-address"
                     autoCapitalize="none"
                 />
+                <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseList)")}>
+                 <Text style={styles.buttonText}>Agregar ejercicio +</Text>
+                </TouchableOpacity>
                <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(routineHome)")}>
                  <Text style={styles.buttonText}>Crear Rutina</Text>
                 </TouchableOpacity>
