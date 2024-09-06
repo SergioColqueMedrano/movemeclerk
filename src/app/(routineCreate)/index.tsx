@@ -1,70 +1,91 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
+import React, { useState } from "react";
+import { Image, StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from "react-native";
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { ButtonExit } from "../../../components/ButtonExit";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Entypo from '@expo/vector-icons/Entypo';
-import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 
-
-export default function routineCreate() {
-    const {user} = useUser();
-    const {signOut} = useAuth();
-    const navigation = useNavigation();
+export default function RoutineCreate() {
+    const { user } = useUser();
+    const { signOut } = useAuth();
+    const [selectedExercise, setSelectedExercise] = useState('');
 
     return (
         <View style={styles.container}>
             <Text style={styles.textHeader}>Crear Rutina</Text>
             
-
-            {/* Aquí añadimos los botones en la parte central */}
+            {/* Campos de entrada de la rutina */}
             <View style={styles.centralButtonsContainer}>
-                
-
                 <TextInput
                     placeholder="Nombre Descripción"
                     placeholderTextColor="#ccc"
                     style={styles.input}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
+                    autoCapitalize="words" // Capitaliza nombres automáticamente
                 />
                 <TextInput
-                    placeholder="sexo"
+                    placeholder="Sexo"
                     placeholderTextColor="#ccc"
                     style={styles.input}
-                    keyboardType="email-address"
                     autoCapitalize="none"
                 />
+
+                {/* Botón para agregar ejercicios */}
                 <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseList)")}>
-                 <Text style={styles.buttonText}>Agregar ejercicio +</Text>
+                    <Text style={styles.buttonText}>Agregar ejercicio +</Text>
                 </TouchableOpacity>
-               <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(routineHome)")}>
-                 <Text style={styles.buttonText}>Crear Rutina</Text>
-                </TouchableOpacity>
-               
-               
-               <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
-                    <AntDesign name="arrowleft" size={24} color="green" />
-                </TouchableOpacity>
-
-
-
             </View>
 
-            <View style={styles.footer}> {/*Falta las de cada boton y que cambie de color dependiendo de donde se encuentra */}
+            {/* ScrollView para la lista de ejercicios seleccionados */}
+            <View style={styles.scroll}>
+            <ScrollView style={styles.scrollContainer}>
+                <TouchableOpacity style={styles.exerciseContainer}>
+                    <Text style={styles.exerciseTitle}>Espalda</Text>
+                    <Text style={styles.exerciseDescription}>Ejercicio 1</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.exerciseContainer}>
+                    <Text style={styles.exerciseTitle}>Espalda</Text>
+                    <Text style={styles.exerciseDescription}>Ejercicio 4</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.exerciseContainer}>
+                    <Text style={styles.exerciseTitle}>Espalda</Text>
+                    <Text style={styles.exerciseDescription}>Ejercicio 7</Text>
+                </TouchableOpacity>
+                
+            </ScrollView>
+            </View>
+            
+
+            {/* Botón para crear la rutina */}
+            <View style={styles.centralButtonsContainer}>
+                <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(routineHome)")}>
+                    <Text style={styles.buttonText}>Crear Rutina</Text>
+                </TouchableOpacity>
+
+                {/* Botón para regresar */}
+                <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
+                    <AntDesign name="arrowleft" size={24} color="green" />
+                </TouchableOpacity>
+            </View>
+
+            {/* Footer con navegación */}
+            <View style={styles.footer}>
                 <TouchableOpacity onPress={() => router.replace("/(categoryHome)")}>
                     <Entypo name="home" size={24} color="white" />
                 </TouchableOpacity>
                 
-                <TouchableOpacity >
+                <TouchableOpacity>
                     <MaterialIcons name="bookmark-add" size={24} color="white" />
                 </TouchableOpacity>
+
+                {/* Botón activo marcado con color verde */}
                 <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
                     <Feather name="list" size={24} color="green" />
                 </TouchableOpacity>
+
                 <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
                     <FontAwesome5 name="dumbbell" size={24} color="white" />
                 </TouchableOpacity>
@@ -80,31 +101,16 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start", 
         backgroundColor: "#202024",
     },
-    backButton: {
-        position: 'absolute',
-        top: 40,  // Ajusta esta distancia según sea necesario
-        left: 35,  // Ajusta esta distancia según sea necesario
-        zIndex: 1,  // Asegura que esté por encima de otros elementos si es necesario
-    },
     buttonGreen: {
         flexDirection: 'row',
-        
-        justifyContent: "center", // Espacia uniformemente los botones
+        justifyContent: "center",
         paddingHorizontal: 16,
-        width: 364,
+        width: 364, // Ajusta el ancho según el diseño
         padding: 30,
         marginVertical: 8,
         backgroundColor: "#00875F",
         borderRadius: 6,
         alignItems: "center",
-    },
-    header: {
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    textContainer: {
-        flexDirection: "column",
-        alignItems: "flex-start",
     },
     textHeader: {
         margin: 30,
@@ -113,54 +119,51 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontWeight: 'bold',
     },
-    Text: {
-        margin: 30,
-        fontSize: 16,
-        color: '#fff',
-        textAlign: "left",
-    },
-    name: {
-        fontSize: 16,
-        color: '#fff',
-        fontWeight: "bold",
-        textAlign: "left",
-    },
-    image: {
-        width: 148,
-        height: 148,
-        borderRadius: 100,
-        backgroundColor: "#323238",
-        borderWidth: 4,
-        borderColor: "#323238",
-    },
     centralButtonsContainer: {
         justifyContent: "flex-start",
         padding: 30,
         alignItems: "center",
-        height: 665,
         backgroundColor: "#121214",
     },
-    button: {
-        width: "100%",
-        padding: 15,
-        marginVertical: 8,
-        backgroundColor: "#00875F",
-        borderRadius: 6,
+    scroll: {
+        width: 361,
+        height: 177,
         alignItems: "center",
     },
-    selectedButton: {
-        borderWidth: 2,
-        borderColor: "#00B37E", // Color del borde del botón seleccionado
+    scrollContainer: {
+        flex: 1,
+        marginVertical: 60,
+        paddingHorizontal: 80, // Asegura que el contenido esté alineado con el botón
+    },
+    exerciseContainer: {
+        padding: 10,
+        marginVertical: 5,
+        backgroundColor: "#121214",
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: "#00875F",
+    },
+    exerciseTitle: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#fff",
+    },
+    exerciseDescription: {
+        fontSize: 14,
+        color: "#ccc",
     },
     buttonText: {
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
     },
-    buttonTextwhite: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
+    input: {
+        width: '100%',
+        padding: 20,
+        marginVertical: 5,
+        backgroundColor: '#202024', // Color negro para los inputs
+        borderRadius: 5,
+        color: '#fff',
     },
     footer: {
         padding: 32,
@@ -171,12 +174,4 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
     },
-    input: {
-        width: '100%',
-        padding: 20,
-        marginVertical: 5,
-        backgroundColor: '#202024', // Color negro para los inputs
-        borderRadius: 5,
-        color: '#fff',
-      },
 });
