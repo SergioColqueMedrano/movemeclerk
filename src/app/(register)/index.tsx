@@ -1,85 +1,78 @@
-
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
-
-import * as WebBrowser from "expo-web-browser"
-
+import * as WebBrowser from "expo-web-browser";
 import { useOAuth } from '@clerk/clerk-expo';
-import { Button } from '../../../components/Button';
-
-import * as Liking from "expo-linking"
 import ParallaxScrollView from '../../../components/ParallaxScrollView';
 import { ThemedView } from '../../../components/ThemedView';
 import DumbbellIcon from '../../../components/DumbbellIcon';
 import { ThemedText } from '../../../components/ThemedText';
+import { Picker } from '@react-native-picker/picker';
 
+WebBrowser.maybeCompleteAuthSession();
 
+export default function SignIn() {
+  const [isLoading, setIsLoding] = useState(false);
+  const googleOAuth = useOAuth({ strategy: "oauth_google" });
 
-
-WebBrowser.maybeCompleteAuthSession()
-
-
-export default function SingIn() {
-
-  const [isLoading, setIsLoding] = useState(false)
-
-  const googleOAuth = useOAuth({ strategy: "oauth_google"})
-  
-  async function onGoogleSignIn() {
-    try{
-      setIsLoding(true)
-
-      //const redirectUrl = Liking.createURL("/")
-
-      const oAuthFlow = await googleOAuth.startOAuthFlow({  })
-
-      if(oAuthFlow.authSessionResult?.type === "success"){
-        if(oAuthFlow.setActive){
-          await oAuthFlow.setActive({ session: oAuthFlow.createdSessionId })
-        }
-      } else {
-        setIsLoding(false)
-      }
-
-    } catch (error) {
-      console.log(error)
-      setIsLoding(false)
-    }
-  } 
-
-  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [gender, setGender] = useState('male'); // Default to 'male'
+  const [birthDate, setBirthDate] = useState(); // Default date in correct format
+
+  async function onGoogleSignIn() {
+    try {
+      setIsLoding(true);
+      const oAuthFlow = await googleOAuth.startOAuthFlow({});
+      if (oAuthFlow.authSessionResult?.type === "success") {
+        if (oAuthFlow.setActive) {
+          await oAuthFlow.setActive({ session: oAuthFlow.createdSessionId });
+        }
+      } else {
+        setIsLoding(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsLoding(false);
+    }
+  }
 
   const handleLogin = async () => {
+    // Validación del formato de la fecha de nacimiento
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(birthDate)) {
+      Alert.alert('Error', 'La fecha debe estar en el formato "YYYY-MM-DD".');
+      return;
+    }
+
     try {
-      const response = await fetch('https://jz420zgh-3000.brs.devtunnels.ms/login', {
+      const response = await fetch('https://jz420zgh-3000.brs.devtunnels.ms/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          // Otras cabeceras que puedas necesitar
         },
         body: JSON.stringify({
-          email: email,
-          password: password,
+          name,
+          email,
+          password,
+          gender,
+          birthDate, // Enviamos la fecha tal como está
         }),
       });
-  
+
       if (response.ok) {
         const jsonResponse = await response.json();
-        Alert.alert('Éxito', 'Inicio de sesión exitoso');
+        Alert.alert('Éxito', 'Registro exitoso');
       } else {
-        Alert.alert('Error', 'Falló el inicio de sesión');
+        Alert.alert('Error', 'Falló el registro');
       }
     } catch (error) {
       Alert.alert('Error', 'Ocurrió un error. Por favor intenta nuevamente.');
     }
   };
-  
 
-  
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#121214', dark: '#121214' }}
@@ -95,17 +88,17 @@ export default function SingIn() {
           <ThemedText type="title">MoveMe</ThemedText>
         </ThemedView>
         <ThemedView style={styles.stepContainer}>
-         <ThemedText type="subtitle">Crear Cuenta</ThemedText>
+          <ThemedText type="subtitle">Crear Cuenta</ThemedText>
         </ThemedView>
+
         <TextInput
           placeholder="Nombre"
           placeholderTextColor="#ccc"
           style={styles.input}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
+          value={name}
+          onChangeText={setName}
         />
+
         <TextInput
           placeholder="E-mail"
           placeholderTextColor="#ccc"
@@ -115,6 +108,7 @@ export default function SingIn() {
           value={email}
           onChangeText={setEmail}
         />
+
         <TextInput
           placeholder="Password"
           placeholderTextColor="#ccc"
@@ -122,40 +116,38 @@ export default function SingIn() {
           secureTextEntry
           value={password}
           onChangeText={setPassword}
-        /><TextInput
-        placeholder="Sexo"
-        placeholderTextColor="#ccc"
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        placeholder="Fecha de Nacimiento"
-        placeholderTextColor="#ccc"
-        style={styles.input}
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+        />
+
+        {/* Picker para seleccionar sexo */}
+        <Picker
+          selectedValue={gender}
+          style={styles.input}
+          onValueChange={(itemValue) => setGender(itemValue)}
+        >
+          <Picker.Item label="Hombre" value="male" />
+          <Picker.Item label="Mujer" value="female" />
+        </Picker>
+
+        {/* Campo de texto para la fecha de nacimiento */}
+        <TextInput
+          placeholder="Fecha de nacimiento (YYYY-MM-DD)"
+          placeholderTextColor="#ccc"
+          style={styles.input}
+          value={birthDate}
+          onChangeText={setBirthDate}
+          keyboardType="numeric"
+        />
+
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Crear Cuenta</Text>
         </TouchableOpacity>
-      
-        <TouchableOpacity style={[styles.buttonblack, styles.selectedButton]} onPress={() =>  router.replace("/(public)")}>
+
+        <TouchableOpacity style={[styles.buttonblack, styles.selectedButton]} onPress={() => router.replace("/(public)")}>
           <Text style={styles.buttonTextgreen}>Ya tienes cuenta</Text>
         </TouchableOpacity>
-     
-      
-      </View>        
-
-         
-         
+      </View>
     </ParallaxScrollView>
-    
-    
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -169,44 +161,33 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reactLogo: {
-    height: '65%',       // Ajusta la altura al 65%
-    width: '100%',       // Mantiene el ancho al 100%
+    height: '65%',
+    width: '100%',
     position: 'absolute',
     bottom: 0,
     left: 0,
     top: '50%',
-    marginTop: '-32.5%', // Ajusta el margen superior para centrar verticalmente
+    marginTop: '-32.5%',
     alignSelf: 'center',
-},
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000', // Fondo oscuro
-  },
-  title: {
-    fontSize: 24,
-    color: '#fff',
-    fontWeight: 'bold',
-    marginVertical: 10,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#fff',
-    marginBottom: 20,
+    backgroundColor: '#000000',
   },
   input: {
     width: '100%',
     padding: 15,
     marginVertical: 10,
-    backgroundColor: '#121214', // Color negro para los inputs
+    backgroundColor: '#121214',
     borderRadius: 5,
     color: '#fff',
   },
   button: {
     width: '100%',
     padding: 15,
-    backgroundColor: '#00b894', // Botón verde
+    backgroundColor: '#00b894',
     borderRadius: 5,
     alignItems: 'center',
     marginVertical: 10,
@@ -214,14 +195,14 @@ const styles = StyleSheet.create({
   buttonblack: {
     width: '100%',
     padding: 15,
-    backgroundColor: '#121214', // Botón verde
+    backgroundColor: '#121214',
     borderRadius: 5,
     alignItems: 'center',
     marginVertical: 10,
   },
   selectedButton: {
     borderWidth: 2,
-    borderColor: "#00B37E", // Color del borde del botón seleccionado
+    borderColor: "#00B37E",
   },
   buttonText: {
     color: '#fff',
@@ -230,16 +211,5 @@ const styles = StyleSheet.create({
   buttonTextgreen: {
     color: '#00B37E',
     fontWeight: 'bold',
-  },
-  linkText2: {
-    color: '#8f8f8f',         // Mantiene el color gris para el texto del enlace
-    textAlign: "center",      // Centra el texto horizontalmente
-    alignSelf: "center",      // Asegura que el texto esté centrado dentro de su contenedor
-    marginTop: 150,            // Mantén este margen si deseas un espacio por encima del texto
-  },
-  linkText: {
-    color: '#8f8f8f',         // Mantiene el color gris para el texto del enlace
-    textAlign: "left",
-    marginTop: 30,         // Mantén este margen si deseas un espacio por encima del texto
   }
 });
