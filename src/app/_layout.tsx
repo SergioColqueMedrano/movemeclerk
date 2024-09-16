@@ -17,7 +17,7 @@ function InitialLayout() {
         if(!isLoaded) return
 
         if(isSignedIn) {
-            router.replace("/(exerciseHome)")  
+            router.replace("/(category)")  
         } else {
             router.replace("/(public)")
         }

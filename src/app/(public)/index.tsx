@@ -54,7 +54,7 @@ export default function SingIn() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://jz420zgh-3000.brs.devtunnels.ms/login', {
+      const response = await fetch('https://jz420zgh-3000.brs.devtunnels.ms/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +69,14 @@ export default function SingIn() {
   
       if (response.ok) {
         const jsonResponse = await response.json();
-        router.replace("/(category)")
+  
+        // Verifica si el email es de administrador
+        if (email === "admin@admin.com") {
+          router.replace("/(exerciseHome)");  // Redirige a la página del administrador
+        } else {
+          router.replace("/(category)");  // Redirige a la página regular
+        }
+  
         Alert.alert('Éxito', 'Inicio de sesión exitoso');
       } else {
         Alert.alert('Error', 'Falló el inicio de sesión');
