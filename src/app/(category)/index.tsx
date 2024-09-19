@@ -7,19 +7,21 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { useSelector } from "react-redux";
 
 export default function Category() {
     const {user} = useUser();
     const {signOut} = useAuth();
     const navigation = useNavigation();
     
+    const userName = useSelector(state => state.userData.userName)
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Image source={{ uri: user?.imageUrl}} style={styles.image}/>
                 <View style={styles.textContainer}>
-                    <Text style={styles.text}>Hola,</Text>
+                    <Text style={styles.text}>Hola, {userName}</Text>
                     <Text style={styles.name}>{user?.fullName}</Text>
                 </View>
                 <ButtonExit icon="exit-outline" title="Salir" onPress={() => signOut()} />   {/*TODO: Deslogear cuentas de la aplicacion MOVEME*/}
