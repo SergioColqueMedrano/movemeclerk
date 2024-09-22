@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity, TextInput, Alert } from "react-native";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { ButtonExit } from "../../../components/ButtonExit";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -8,58 +8,84 @@ import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
-
+import { useState } from "react"; // Importar useState
 
 export default function ExerciseCreate() {
-    const {user} = useUser();
-    const {signOut} = useAuth();
+    const { user } = useUser();
+    const { signOut } = useAuth();
     const navigation = useNavigation();
+
+    // Crear los estados para capturar los inputs
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+
+    // Función para manejar el POST
+    const handleCreateExercise = async () => {
+        try {
+            const response = await fetch("https://jz420zgh-3000.brs.devtunnels.ms/exercises", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    description: description,
+                }),
+            });
+
+            if (response.ok) {
+                Alert.alert("Éxito", "Ejercicio creado correctamente");
+                router.replace("/(exerciseHome)");
+            } else {
+                const errorData = await response.json();
+                Alert.alert("Error", errorData.message || "Error al crear el ejercicio");
+            }
+        } catch (error) {
+            Alert.alert("Error", "Hubo un problema al conectar con el servidor");
+        }
+    };
 
     return (
         <View style={styles.container}>
             <Text style={styles.textHeader}>Crear Ejercicio</Text>
-            
 
-            {/* Aquí añadimos los botones en la parte central */}
             <View style={styles.centralButtonsContainer}>
-                
+                {/* Input para nombre */}
+                <TextInput
+                    placeholder="Nombre"
+                    placeholderTextColor="#ccc"
+                    style={styles.input}
+                    value={name}
+                    onChangeText={setName} // Capturar valor
+                />
+                {/* Input para descripción */}
+                <TextInput
+                    placeholder="Descripción"
+                    placeholderTextColor="#ccc"
+                    style={styles.input}
+                    value={description}
+                    onChangeText={setDescription} // Capturar valor
+                />
 
-                <TextInput
-                    placeholder="Nombre Descripción"
-                    placeholderTextColor="#ccc"
-                    style={styles.input}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-                <TextInput
-                    placeholder="Cargar Archivo Multimedia"
-                    placeholderTextColor="#ccc"
-                    style={styles.input}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-               <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseCreate)")}>
-                 <Text style={styles.buttonText}>Crear Ejercicio</Text>
+                {/* Botón para crear ejercicio */}
+                <TouchableOpacity style={styles.buttonGreen} onPress={handleCreateExercise}>
+                    <Text style={styles.buttonText}>Crear Ejercicio</Text>
                 </TouchableOpacity>
-               
-               
-               <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
+
+                <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
                     <AntDesign name="arrowleft" size={24} color="green" />
                 </TouchableOpacity>
-
-
-
             </View>
 
-            <View style={styles.footer}> {/*Falta las de cada boton y que cambie de color dependiendo de donde se encuentra */}
+            <View style={styles.footer}>
                 <TouchableOpacity onPress={() => router.replace("/(categoryHome)")}>
                     <Entypo name="home" size={24} color="white" />
                 </TouchableOpacity>
                 
-                <TouchableOpacity >
+                <TouchableOpacity>
                     <MaterialIcons name="bookmark-add" size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity >
+                <TouchableOpacity>
                     <Feather name="list" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
@@ -79,14 +105,13 @@ const styles = StyleSheet.create({
     },
     backButton: {
         position: 'absolute',
-        top: 40,  // Ajusta esta distancia según sea necesario
-        left: 35,  // Ajusta esta distancia según sea necesario
-        zIndex: 1,  // Asegura que esté por encima de otros elementos si es necesario
+        top: 40, 
+        left: 35, 
+        zIndex: 1,  
     },
     buttonGreen: {
         flexDirection: 'row',
-        
-        justifyContent: "center", // Espacia uniformemente los botones
+        justifyContent: "center",
         paddingHorizontal: 16,
         width: 364,
         padding: 30,
@@ -147,14 +172,9 @@ const styles = StyleSheet.create({
     },
     selectedButton: {
         borderWidth: 2,
-        borderColor: "#00B37E", // Color del borde del botón seleccionado
+        borderColor: "#00B37E",
     },
     buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    buttonTextwhite: {
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
@@ -172,8 +192,8 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 20,
         marginVertical: 5,
-        backgroundColor: '#202024', // Color negro para los inputs
+        backgroundColor: '#202024',
         borderRadius: 5,
         color: '#fff',
-      },
+    },
 });

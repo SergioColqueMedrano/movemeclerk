@@ -23,6 +23,7 @@ export default function Category() {
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>Hola, {userName}</Text>
                     <Text style={styles.name}>{user?.fullName}</Text>
+                    
                 </View>
                 <ButtonExit icon="exit-outline" title="Salir" onPress={() => signOut()} />   {/*TODO: Deslogear cuentas de la aplicacion MOVEME*/}
             </View>

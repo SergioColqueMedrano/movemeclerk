@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { ButtonExit } from "../../../components/ButtonExit";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -10,75 +10,63 @@ import { router } from "expo-router";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
 import Octicons from '@expo/vector-icons/Octicons';
+import { useState, useEffect } from "react";
 
 export default function ExerciseHome() {
-    const {user} = useUser();
-    const {signOut} = useAuth();
+    const { user } = useUser();
+    const { signOut } = useAuth();
     const navigation = useNavigation();
-    
+
+    // Estado para almacenar los ejercicios
+    const [exercises, setExercises] = useState([]);
+
+    // useEffect para obtener los ejercicios de la API cuando el componente se monta
+    useEffect(() => {
+        fetch('https://jz420zgh-3000.brs.devtunnels.ms/exercises')
+            .then(response => response.json())
+            .then(data => setExercises(data))
+            .catch(error => console.error('Error fetching exercises:', error));
+    }, []);
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Image source={{ uri: user?.imageUrl}} style={styles.image}/>
+                <Image source={{ uri: user?.imageUrl }} style={styles.image} />
                 <View style={styles.textContainer}>
-                    <Text style={styles.text}>Hola,</Text>
-                    <Text style={styles.name}>{user?.fullName}</Text>
+                    <Text style={styles.text}>Hola, Administrador</Text>
                 </View>
-                <ButtonExit icon="exit-outline" title="Salir" onPress={() => signOut()} />   {/*TODO: Deslogear cuentas de la aplicacion MOVEME*/}
+                <ButtonExit icon="exit-outline" title="Salir" onPress={() => signOut()} />
             </View>
 
-            {/* Aquí añadimos los botones en la parte central */}
-            <View style={styles.centralButtonsContainer}>
-               
-                 <View style={styles.button}>                    
-                    <Text style={styles.buttonNumber}>Ejercicio 1</Text>
-                    <View style={styles.div}>
-                        <TouchableOpacity onPress={() => router.replace("/(exerciseEdit)")}>
-                            <Octicons name="pencil" size={24} color="white" />
-                        </TouchableOpacity >
-                        <TouchableOpacity onPress={() => router.replace("/(exerciseDelete)")}>
-                            <Entypo name="cross" size={24} color="white" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.button}>                    
-                    <Text style={styles.buttonNumber}>Ejercicio 2</Text>
-                    <View style={styles.div}>
-                        <TouchableOpacity>
-                            <Octicons name="pencil" size={24} color="white" />
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Entypo name="cross" size={24} color="white" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.button}>                    
-                    <Text style={styles.buttonNumber}>Ejercicio 3</Text>
-                    <View style={styles.div}>
-                        <TouchableOpacity>
-                            <Octicons name="pencil" size={24} color="white" />
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Entypo name="cross" size={24} color="white" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                
+            {/* Aquí añadimos los botones dinámicos en la parte central */}
+            <ScrollView contentContainerStyle={styles.centralButtonsContainer}>
+                {
+                    exercises.map((exercise, index) => (
+                        <View style={styles.button} key={exercise.id}>                    
+                            <Text style={styles.buttonNumber}>{exercise.name}</Text>  {/* Mostrar el nombre del ejercicio */}
+                            <View style={styles.div}>
+                                <TouchableOpacity onPress={() => router.replace("/(exerciseEdit)", { exerciseId: exercise.id })}>
+                                    <Octicons name="pencil" size={24} color="white" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => router.replace("/(exerciseDelete)", { exerciseId: exercise.id })}>
+                                    <Entypo name="cross" size={24} color="white" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    ))
+                }
                 
                 <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseCreate)")}>
-                <FontAwesome name="plus" size={30} color="white" />  
-                 <Text style={styles.buttonText}>Agregar Ejercicio</Text>
+                    <FontAwesome name="plus" size={30} color="white" />
+                    <Text style={styles.buttonText}>Agregar Ejercicio</Text>
                 </TouchableOpacity>
-                
-            </View>
+            </ScrollView>
 
-            <View style={styles.footer}> {/*Falta las de cada boton y que cambie de color dependiendo de donde se encuentra */}
+            <View style={styles.footer}>
                 <TouchableOpacity onPress={() => router.replace("/(categoryHome)")}>
                     <Entypo name="home" size={24} color="white" />
                 </TouchableOpacity>
-                
-                <TouchableOpacity >
+                <TouchableOpacity>
                     <MaterialIcons name="bookmark-add" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
@@ -96,7 +84,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 0,
-        justifyContent: "flex-start", 
+        justifyContent: "flex-start",
         backgroundColor: "#202024",
     },
     header: {
@@ -115,12 +103,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         textAlign: "left",
     },
-    name: {
-        fontSize: 16,
-        color: '#fff',
-        fontWeight: "bold",
-        textAlign: "left",
-    },
     image: {
         width: 64,
         height: 64,
@@ -130,30 +112,25 @@ const styles = StyleSheet.create({
         borderColor: "#323238",
     },
     centralButtonsContainer: {
-        justifyContent: "flex-start",
         padding: 30,
         alignItems: "center",
-        height: 665,
         backgroundColor: "#121214",
     },
     div: {
         flexDirection: 'row',
-    }, 
+    },
     button: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         width: 364,
         padding: 30,
         marginVertical: 8,
         backgroundColor: "#323238",
         borderRadius: 6,
-        alignItems: "center",
-        justifyContent: "space-between",
+        alignItems: "flex-start",
     },
     buttonGreen: {
         flexDirection: 'row',
-        
-        justifyContent: "center", // Espacia uniformemente los botones
-        paddingHorizontal: 16,
+        justifyContent: "center",
         width: 364,
         padding: 30,
         marginVertical: 8,
@@ -161,20 +138,15 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         alignItems: "center",
     },
-    selectedButton: {
-        borderWidth: 2,
-        borderColor: "#00B37E", // Color del borde del botón seleccionado
-    },
     buttonText: {
         color: "#fff",
-        padding: 15,
+        paddingTop: 10,
         fontSize: 16,
-        fontWeight: "bold"
     },
     buttonNumber: {
         color: "#fff",
         fontSize: 16,
-        fontWeight: "bold"
+        fontWeight: "bold",
     },
     footer: {
         padding: 32,
