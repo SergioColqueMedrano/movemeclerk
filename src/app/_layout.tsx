@@ -3,6 +3,8 @@ import { router, Slot } from "expo-router"
 import { useEffect } from "react"
 import { ActivityIndicator } from "react-native"
 import { tokenCache } from "./storage/tokenCache"
+import { Provider } from "react-redux"
+import { store } from "@/store/store"
 
 
 const PUBLIC_CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY as string
@@ -32,7 +34,9 @@ function InitialLayout() {
 export default function Layout() {
     return (
         <ClerkProvider publishableKey={PUBLIC_CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
-            <InitialLayout />
+            <Provider store={store}>
+                 <InitialLayout />
+            </Provider>            
         </ClerkProvider>
     )
 }

@@ -13,6 +13,7 @@ import ParallaxScrollView from '../../../components/ParallaxScrollView';
 import { ThemedView } from '../../../components/ThemedView';
 import DumbbellIcon from '../../../components/DumbbellIcon';
 import { ThemedText } from '../../../components/ThemedText';
+import { useSelector } from 'react-redux';
 
 {/*TODO: VARIABLES DE ESTADO REDUX*/}
 
@@ -25,6 +26,8 @@ export default function SingIn() {
   const [isLoading, setIsLoding] = useState(false)
 
   const googleOAuth = useOAuth({ strategy: "oauth_google"})
+
+ 
   
   async function onGoogleSignIn() {
     try{
