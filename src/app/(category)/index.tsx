@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 import { useSelector } from "react-redux";
+//prueba
 
 export default function Category() {
     const {user} = useUser();
