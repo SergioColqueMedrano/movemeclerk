@@ -7,26 +7,25 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
-import { useSelector } from "react-redux";
-//test2
+import { useSelector } from 'react-redux'; // Asegúrate de importar useSelector
 
 export default function Category() {
-    const {user} = useUser();
-    const {signOut} = useAuth();
+    const { user } = useUser();
+    const { signOut } = useAuth();
     const navigation = useNavigation();
     
-    const userName = useSelector(state => state.userData.userName)
+    // Utilizando useSelector para obtener userName del estado de Redux
+    const userName = useSelector((state) => state.user.userData.userName) || ''; // Establecer un valor por defecto
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Image source={{ uri: user?.imageUrl}} style={styles.image}/>
+                <Image source={{ uri: user?.imageUrl }} style={styles.image} />
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>Hola, {userName}</Text>
                     <Text style={styles.name}>{user?.fullName}</Text>
-                    
                 </View>
-                <ButtonExit icon="exit-outline" title="Salir" onPress={() => signOut()} />   {/*TODO: Deslogear cuentas de la aplicacion MOVEME*/}
+                <ButtonExit icon="exit-outline" title="Salir" onPress={() => signOut()} />
             </View>
 
             {/* Aquí añadimos los botones en la parte central */}
@@ -55,7 +54,7 @@ export default function Category() {
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.footer}> {/*Falta las de cada boton y que cambie de color dependiendo de donde se encuentra */}
+            <View style={styles.footer}>
                 <TouchableOpacity >
                     <Entypo name="home" size={24} color="green" />
                 </TouchableOpacity>
@@ -77,7 +76,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 0,
-        justifyContent: "flex-start", 
+        justifyContent: "flex-start",
         backgroundColor: "#202024",
     },
     header: {

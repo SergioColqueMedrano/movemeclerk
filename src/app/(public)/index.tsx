@@ -20,7 +20,7 @@ export default function SignIn() {
 
   const dispatch = useDispatch(); // Inicializa el dispatch
   const userId = useSelector((state: RootState) => state.user.userId); // Accede al estado de usuario
-  const isSignedIn = useSelector((state: RootState) => state.user.isSignedIn);
+  const isSignedIn = useSelector((state: RootState) => state.user.isAuthenticated); // Asegúrate de que esto es correcto
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

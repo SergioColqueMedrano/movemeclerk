@@ -64,27 +64,33 @@ export const loginFailure = (error: string) => ({
   payload: error,
 });
 
-// Acción asíncrona para el login
-export const loginAsync = (username: string, password: string) => {
+// Acción asíncrona para el login real
+export const loginAsync = (email: string, password: string) => {
   return async (dispatch: Dispatch) => {
     dispatch(loginRequest());
 
     try {
-      // Simular una llamada API asíncrona
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Realiza una llamada al servidor para autenticar
+      const response = await fetch('https://tzbvv02d-3000.brs.devtunnels.ms/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          email,   // Envío de email y password al servidor
+          password,
+        }),
+      });
 
-      // Validar credenciales
-      if (username === 'usuario' && password === 'contraseña') {
-        dispatch(
-          loginSuccess({
-            id: '1',
-            username,
-            email: 'usuario@example.com',
-          })
-        );
+      // Verifica si la respuesta es exitosa
+      if (response.ok) {
+        const data = await response.json(); // Procesa los datos de la respuesta
+        dispatch(loginSuccess(data)); // Llama a la acción de éxito con los datos recibidos
         return true;
       } else {
-        dispatch(loginFailure('Credenciales inválidas'));
+        const errorData = await response.json();
+        dispatch(loginFailure(errorData.message || 'Credenciales inválidas'));
         return false;
       }
     } catch (error) {

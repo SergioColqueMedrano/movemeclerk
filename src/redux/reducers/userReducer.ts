@@ -21,7 +21,7 @@ const initialState = {
   },
 };
 
-// Reducer
+// Reducer de usuario
 export const userReducer = (state = initialState, action: any) => {
   switch (action.type) {
     case LOGIN_REQUEST:
@@ -34,12 +34,12 @@ export const userReducer = (state = initialState, action: any) => {
       return {
         ...state,
         isAuthenticated: true,
-        userId: action.payload.userId,  // Establece el userId
+        userId: action.payload.userId || '',  // Establece el userId recibido del servidor
         userData: {
-          userName: action.payload.userName,
-          email: action.payload.email,
-          gender: action.payload.gender,
-          birthDate: action.payload.birthDate,
+          userName: action.payload.userName || '',  // Asegura que haya un valor por defecto
+          email: action.payload.email || '',
+          gender: action.payload.gender || '',
+          birthDate: action.payload.birthDate || '',
         },
         loading: false,
         error: null,
@@ -49,14 +49,14 @@ export const userReducer = (state = initialState, action: any) => {
         ...state,
         isAuthenticated: false,
         loading: false,
-        error: action.payload,
+        error: action.payload.error || 'Error desconocido',  // Maneja el mensaje de error
       };
     case SIGN_OUT:
       return {
         ...state,
         isAuthenticated: false,
         userId: '',
-        userData: initialState.userData,  // Reinicia los datos del usuario
+        userData: initialState.userData,  // Reinicia los datos del usuario al estado inicial
         loading: false,
         error: null,
       };
@@ -65,7 +65,7 @@ export const userReducer = (state = initialState, action: any) => {
         ...state,
         userData: {
           ...state.userData,
-          ...action.payload,  // Actualiza los datos del usuario
+          ...action.payload,  // Actualiza los datos del usuario con la nueva información
         },
       };
     default:
@@ -75,5 +75,7 @@ export const userReducer = (state = initialState, action: any) => {
 
 // Root Reducer
 export const rootReducer = combineReducers({
-  user: userReducer,
+  user: userReducer,  // Asegura que el reducer de usuario está registrado correctamente
 });
+
+export default rootReducer;
