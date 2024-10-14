@@ -1,12 +1,16 @@
-import { combineReducers, createStore } from "redux";
+// store.ts
+import { configureStore } from '@reduxjs/toolkit';
+import { userReducer } from '@/redux/reducers/userReducer'; // Asegúrate de tener el reducer correctamente configurado
 
-const initialState = {
-    isSignedIn: true,
-    userName: "Conan"
-}
+// Crea el store con configureStore, que incluye thunk por defecto
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+  },
+});
 
-const rootReducer = combineReducers({
-    userData : () => initialState
-})
+// Define el tipo RootState basado en el store
+export type RootState = ReturnType<typeof store.getState>;
 
-export const store = createStore(rootReducer)
+// Define el tipo AppDispatch basado en el store
+export type AppDispatch = typeof store.dispatch;
