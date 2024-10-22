@@ -7,25 +7,35 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
-import { useSelector } from 'react-redux'; // Asegúrate de importar useSelector
+import { useSelector } from 'react-redux';
+import UserState from "@/redux/reducers/userReducer";
 
 export default function Category() {
     const { user } = useUser();
     const { signOut } = useAuth();
     const navigation = useNavigation();
     
-    // Utilizando useSelector para obtener userName del estado de Redux
-    const userName = useSelector((state) => state.user.userData.userName) || ''; // Establecer un valor por defecto
+    // Assume the user state structure contains email or other metadata
+    const userName = useSelector((state: any) => {
+        console.log('Redux state:', state); // Log the entire state to get insight
+        return state.user?.userData?.name || ''; // Reflect state structure accurately here
+    });
+
+    console.log('User Name:', userName); // Use for debugging purpose
+
+
+    console.log('User Name:', userName); // Log the userName to ensure it's correctly fetched
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Image source={{ uri: user?.imageUrl }} style={styles.image} />
+            <Image source={require('../../../assets/images/avatar.png')} style={styles.image} />
+
                 <View style={styles.textContainer}>
-                    <Text style={styles.text}>Hola, {userName}</Text>
+                    <Text style={styles.text}>Hola, {userName}</Text>  {/* Usando userName */}
                     <Text style={styles.name}>{user?.fullName}</Text>
                 </View>
-                <ButtonExit icon="exit-outline" title="Salir" onPress={() => signOut()} />
+                <ButtonExit icon="exit-outline" title="Salir" onPress={() => router.replace("/(public)")} />
             </View>
 
             {/* Aquí añadimos los botones en la parte central */}

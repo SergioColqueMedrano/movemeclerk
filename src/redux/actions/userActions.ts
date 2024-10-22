@@ -12,7 +12,7 @@ export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 
 // Interfaz para el tipo de datos del usuario
 interface UserData {
-  userName: string;
+  name: string;
   email: string;
   gender: string;
   birthDate: string;
@@ -71,7 +71,7 @@ export const loginAsync = (email: string, password: string) => {
 
     try {
       // Realiza una llamada al servidor para autenticar
-      const response = await fetch('https://tzbvv02d-3000.brs.devtunnels.ms/auth/login', {
+      const response = await fetch('https://5h8llgsm-3000.brs.devtunnels.ms/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

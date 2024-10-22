@@ -7,14 +7,28 @@ const LOGIN_FAILURE = 'LOGIN_FAILURE';
 const SIGN_OUT = 'SIGN_OUT';
 const UPDATE_USER_DATA = 'UPDATE_USER_DATA';
 
-// Estado inicial
-const initialState = {
+// Tipo del estado de usuario
+interface UserState {
+  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
+  userId: string;
+  userData: {
+    name: string;
+    email: string;
+    gender: string;
+    birthDate: string;
+  };
+}
+
+// Estado inicial tipificado
+const initialState: UserState = {
   isAuthenticated: false,
   loading: false,
   error: null,
   userId: '',
   userData: {
-    userName: '',
+    name: '',
     email: '',
     gender: '',
     birthDate: '',
@@ -22,7 +36,7 @@ const initialState = {
 };
 
 // Reducer de usuario
-export const userReducer = (state = initialState, action: any) => {
+export const userReducer = (state = initialState, action: any): UserState => {
   switch (action.type) {
     case LOGIN_REQUEST:
       return {
@@ -34,9 +48,9 @@ export const userReducer = (state = initialState, action: any) => {
       return {
         ...state,
         isAuthenticated: true,
-        userId: action.payload.userId || '',  // Establece el userId recibido del servidor
+        userId: action.payload.userId || '',
         userData: {
-          userName: action.payload.userName || '',  // Asegura que haya un valor por defecto
+          name: action.payload.name || '',
           email: action.payload.email || '',
           gender: action.payload.gender || '',
           birthDate: action.payload.birthDate || '',
@@ -49,14 +63,14 @@ export const userReducer = (state = initialState, action: any) => {
         ...state,
         isAuthenticated: false,
         loading: false,
-        error: action.payload.error || 'Error desconocido',  // Maneja el mensaje de error
+        error: action.payload.error || 'Error desconocido',
       };
     case SIGN_OUT:
       return {
         ...state,
         isAuthenticated: false,
         userId: '',
-        userData: initialState.userData,  // Reinicia los datos del usuario al estado inicial
+        userData: initialState.userData,
         loading: false,
         error: null,
       };
@@ -65,7 +79,7 @@ export const userReducer = (state = initialState, action: any) => {
         ...state,
         userData: {
           ...state.userData,
-          ...action.payload,  // Actualiza los datos del usuario con la nueva información
+          ...action.payload,
         },
       };
     default:
@@ -73,9 +87,9 @@ export const userReducer = (state = initialState, action: any) => {
   }
 };
 
-// Root Reducer
+// Root Reducer (si tienes más reducers)
 export const rootReducer = combineReducers({
-  user: userReducer,  // Asegura que el reducer de usuario está registrado correctamente
+  user: userReducer,
 });
 
 export default rootReducer;

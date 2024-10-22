@@ -9,24 +9,28 @@ import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 
-// Datos de ejemplo para los ejercicios
+// Datos extendidos para los ejercicios
 const days = [
     {
         day: "Día 1",
         exercises: [
-            { id: 1, title: "Ejercicio 1", series: "3 series x 12 repeticiones", image: require('@../../../assets/images/avatar.png') },
-            { id: 2, title: "Ejercicio 2", series: "3 series x 12 repeticiones", image: require('@../../../assets/images/avatar.png') },
-            { id: 3, title: "Ejercicio 3", series: "3 series x 12 repeticiones", image: require('@../../../assets/images/avatar.png') },
-            { id: 4, title: "Ejercicio 4", series: "3 series x 12 repeticiones", image: require('@../../../assets/images/avatar.png') },
+            { id: 1, title: "Ejercicio 1", series: "3 series", repetitions: "12 repeticiones", image: require('@../../../assets/images/avatar.png') },
+            { id: 2, title: "Ejercicio 2", series: "3 series", repetitions: "12 repeticiones", image: require('@../../../assets/images/avatar.png') },
+            { id: 3, title: "Ejercicio 3", series: "4 series", repetitions: "10 repeticiones", image: require('@../../../assets/images/avatar.png') },
         ],
     },
     {
         day: "Día 2",
         exercises: [
-            { id: 5, title: "Ejercicio 5", series: "4 series x 10 repeticiones", image: require('@../../../assets/images/avatar.png') },
-            { id: 6, title: "Ejercicio 6", series: "4 series x 10 repeticiones", image: require('@../../../assets/images/avatar.png') },
-            { id: 7, title: "Ejercicio 7", series: "4 series x 10 repeticiones", image: require('@../../../assets/images/avatar.png') },
-            { id: 8, title: "Ejercicio 8", series: "4 series x 10 repeticiones", image: require('@../../../assets/images/avatar.png') },
+            { id: 4, title: "Ejercicio 4", series: "4 series", repetitions: "10 repeticiones", image: require('@../../../assets/images/avatar.png') },
+            { id: 5, title: "Ejercicio 5", series: "3 series", repetitions: "15 repeticiones", image: require('@../../../assets/images/avatar.png') },
+        ],
+    },
+    {
+        day: "Día 3",
+        exercises: [
+            { id: 6, title: "Ejercicio 6", series: "5 series", repetitions: "8 repeticiones", image: require('@../../../assets/images/avatar.png') },
+            { id: 7, title: "Ejercicio 7", series: "4 series", repetitions: "10 repeticiones", image: require('@../../../assets/images/avatar.png') },
         ],
     }
 ];
@@ -35,12 +39,22 @@ export default function Routine() {
     const { user } = useUser();
     const { signOut } = useAuth();
     const navigation = useNavigation();
-    const [expandedDays, setExpandedDays] = useState({}); // Estado para manejar la expansión de los días
+    const [expandedDays, setExpandedDays] = useState({});
+    const [completedExercises, setCompletedExercises] = useState({});
 
+    // Función para expandir o colapsar los días
     const toggleDay = (day) => {
         setExpandedDays((prev) => ({
             ...prev,
             [day]: !prev[day],
+        }));
+    };
+
+    // Función para marcar un ejercicio como completado
+    const toggleCompleted = (exerciseId) => {
+        setCompletedExercises((prev) => ({
+            ...prev,
+            [exerciseId]: !prev[exerciseId],
         }));
     };
 
@@ -66,12 +80,8 @@ export default function Routine() {
                 {days.map((dayData, index) => (
                     <View key={index}>
                         <TouchableOpacity style={styles.dayButton} onPress={() => toggleDay(dayData.day)}>
-                            
                             <Text style={styles.dayText}>{dayData.day}</Text>
-                            
                             <AntDesign name={expandedDays[dayData.day] ? "up" : "down"} size={24} color="white" />
-                            
-                           
                         </TouchableOpacity>
 
                         {expandedDays[dayData.day] && (
@@ -79,14 +89,30 @@ export default function Routine() {
                                 data={dayData.exercises}
                                 keyExtractor={(item) => item.id.toString()}
                                 renderItem={({ item }) => (
-                                    <TouchableOpacity style={styles.exerciseButton} onPress={() => router.replace("/(exercise)")}>
+                                    <View style={[
+                                        styles.exerciseContainer, 
+                                        completedExercises[item.id] && styles.exerciseCompleted
+                                    ]}>
+                                        <Text style={styles.exerciseTitle}>{item.title}</Text>
                                         <Image source={item.image} style={styles.exerciseImage} />
-                                        <View style={styles.exerciseInfo}>
-                                            <Text style={styles.exerciseTitle}>{item.title}</Text>
-                                            <Text style={styles.exerciseSeries}>{item.series}</Text>
+                                        <View style={styles.infoContainer}>
+                                            <View style={styles.seriesContainer}>
+                                                <FontAwesome5 name="dumbbell" size={16} color="white" />
+                                                <Text style={styles.seriesText}>{item.series}</Text>
+                                            </View>
+                                            <View style={styles.repsContainer}>
+                                                <FontAwesome5 name="comments" size={16} color="white" />
+                                                <Text style={styles.repsText}>{item.repetitions}</Text>
+                                            </View>
+                                            <TouchableOpacity 
+                                                style={styles.completeButton} 
+                                                onPress={() => toggleCompleted(item.id)}>
+                                                <Text style={styles.completeButtonText}>
+                                                    {completedExercises[item.id] ? "Completado" : "Marcar como realizado"}
+                                                </Text>
+                                            </TouchableOpacity>
                                         </View>
-                                        <AntDesign name="right" size={24} color="white" />
-                                    </TouchableOpacity>
+                                    </View>
                                 )}
                             />
                         )}
@@ -96,13 +122,13 @@ export default function Routine() {
 
             {/* Footer */}
             <View style={styles.footer}>
-                <TouchableOpacity >
+                <TouchableOpacity>
                     <Entypo name="home" size={24} color="green" />
                 </TouchableOpacity>
-                <TouchableOpacity >
+                <TouchableOpacity>
                     <FontAwesome5 name="dumbbell" size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity >
+                <TouchableOpacity>
                     <FontAwesome5 name="history" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(profile)")}>
@@ -114,11 +140,10 @@ export default function Routine() {
 }
 
 const styles = StyleSheet.create({
-    // Estilos similares a los que ya tenías
     container: {
         flex: 1,
         padding: 0,
-        justifyContent: "flex-start", 
+        justifyContent: "flex-start",
         backgroundColor: "#202024",
     },
     header: {
@@ -175,7 +200,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
     },
-    // Estilos para los días y ejercicios
     dayButton: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -192,40 +216,63 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
     },
-    exerciseButton: {
-        flexDirection: "row",
-        alignItems: "center",
+    exerciseContainer: {
         backgroundColor: "#3E3E42",
         borderRadius: 6,
-        padding: 10,
-        marginVertical: 4,
+        padding: 16,
+        marginVertical: 8,
         width: 364,
+        alignItems: "center",
     },
-    exerciseImage: {
-        width: 64,
-        height: 64,
-        borderRadius: 6,
-    },
-    exerciseInfo: {
-        flex: 1,
-        marginLeft: 12,
+    exerciseCompleted: {
+        backgroundColor: "#00B37E",
     },
     exerciseTitle: {
         color: "#fff",
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: "bold",
+        marginBottom: 12,
     },
-    exerciseSeries: {
-        color: "#A1A1A1",
-        fontSize: 14,
+    exerciseImage: {
+        width: 100,
+        height: 100,
+        marginBottom: 12,
+    },
+    infoContainer: {
+        flexDirection: "column",
+        alignItems: "center",
+    },
+    seriesContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 4,
+    },
+    seriesText: {
+        color: "#fff",
+        marginLeft: 8,
+    },
+    repsContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 4,
+    },
+    repsText: {
+        color: "#fff",
+        marginLeft: 8,
+    },
+    completeButton: {
+        marginTop: 12,
+        padding: 10,
+        backgroundColor: "#00B37E",
+        borderRadius: 6,
+    },
+    completeButtonText: {
+        color: "#fff",
     },
     footer: {
-        padding: 32,
-        position: "absolute",
-        bottom: 40,
-        left: 32,
-        right: 32,
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
+        padding: 16,
+        backgroundColor: "#121214",
     },
 });
