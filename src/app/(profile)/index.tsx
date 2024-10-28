@@ -24,7 +24,7 @@ export default function Profile() {
                     <AntDesign name="arrowleft" size={24} color="green" />
                 </TouchableOpacity>
                 <View style={styles.header}>
-                    <Image source={{ uri: user?.imageUrl}} style={styles.image}/>
+                <Image source={user?.imageUrl ? { uri: user.imageUrl } : require('../../../assets/images/avatar.png')} style={styles.image} />
                 </View>
                 <Text style={styles.buttonText}>Cambiar Foto</Text>
 

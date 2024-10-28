@@ -20,12 +20,12 @@ export default function RoutineHome() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Image source={{ uri: user?.imageUrl}} style={styles.image}/>
+            <Image source={user?.imageUrl ? { uri: user.imageUrl } : require('../../../assets/images/avatar.png')} style={styles.image} />
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>Hola,</Text>
                     <Text style={styles.name}>{user?.fullName}</Text>
                 </View>
-                <ButtonExit icon="exit-outline" title="Salir" onPress={() => signOut()} />   {/*TODO: Deslogear cuentas de la aplicacion MOVEME*/}
+                <ButtonExit icon="exit-outline" title="Salir" onPress={() => {signOut();router.replace("/(public)")}} />  
             </View>
 
             {/* Aquí añadimos los botones en la parte central */}

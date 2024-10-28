@@ -62,12 +62,12 @@ export default function Routine() {
         <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <Image source={{ uri: user?.imageUrl}} style={styles.image}/>
+            <Image source={user?.imageUrl ? { uri: user.imageUrl } : require('../../../assets/images/avatar.png')} style={styles.image} />
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>Hola,</Text>
                     <Text style={styles.name}>{user?.fullName}</Text>
                 </View>
-                <ButtonExit icon="exit-outline" title="Salir" onPress={() => signOut()} />
+                <ButtonExit icon="exit-outline" title="Salir" onPress={() => {signOut();router.replace("/(public)")}} />
             </View>
 
             {/* Central content */}
