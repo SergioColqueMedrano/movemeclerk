@@ -50,7 +50,7 @@ export default function categoryEdit() {
                     <Entypo name="home" size={24} color="white" />
                 </TouchableOpacity>
                 
-                <TouchableOpacity >
+                <TouchableOpacity onPress={() => router.replace("/(categoryCreate)")}>
                     <MaterialIcons name="bookmark-add" size={24} color="green" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
@@ -59,7 +59,7 @@ export default function categoryEdit() {
                 <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
                     <FontAwesome5 name="dumbbell" size={24} color="white" />
                 </TouchableOpacity>
-            </View>
+                </View>
         </View>
     );
 }

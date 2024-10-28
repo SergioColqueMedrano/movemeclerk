@@ -66,7 +66,7 @@ export default function ExerciseHome() {
                 <TouchableOpacity onPress={() => router.replace("/(categoryHome)")}>
                     <Entypo name="home" size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => router.replace("/(categoryCreate)")}>
                     <MaterialIcons name="bookmark-add" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>

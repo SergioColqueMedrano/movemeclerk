@@ -56,7 +56,7 @@ export default function routineEdit() {
                     <Entypo name="home" size={24} color="white" />
                 </TouchableOpacity>
                 
-                <TouchableOpacity >
+                <TouchableOpacity onPress={() => router.replace("/(categoryCreate)")}>
                     <MaterialIcons name="bookmark-add" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>

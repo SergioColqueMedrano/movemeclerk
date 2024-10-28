@@ -59,13 +59,13 @@ export default function categoryCreate() {
                 <TouchableOpacity onPress={() => router.replace("/(categoryCreate)")}>
                     <MaterialIcons name="bookmark-add" size={24} color="green" />
                 </TouchableOpacity>
-                <TouchableOpacity >
+                <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
                     <Feather name="list" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
                     <FontAwesome5 name="dumbbell" size={24} color="white" />
                 </TouchableOpacity>
-            </View>
+                </View>
         </View>
     );
 }
