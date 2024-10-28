@@ -122,13 +122,13 @@ export default function Routine() {
 
             {/* Footer */}
             <View style={styles.footer}>
-                <TouchableOpacity>
-                    <Entypo name="home" size={24} color="green" />
+                <TouchableOpacity onPress={() => router.replace("/(auth)")}>
+                    <Entypo name="home" size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <FontAwesome5 name="dumbbell" size={24} color="white" />
+                <TouchableOpacity onPress={() => router.replace("/(category)")}>
+                    <FontAwesome5 name="dumbbell" size={24} color="green" />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => router.replace("/(history)")}>
                     <FontAwesome5 name="history" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(profile)")}>
@@ -270,9 +270,12 @@ const styles = StyleSheet.create({
         color: "#fff",
     },
     footer: {
+        padding: 32,
+        position: "absolute",
+        bottom: 40,
+        left: 32,
+        right: 32,
         flexDirection: "row",
-        justifyContent: "space-around",
-        padding: 16,
-        backgroundColor: "#121214",
+        justifyContent: "space-between",
     },
 });

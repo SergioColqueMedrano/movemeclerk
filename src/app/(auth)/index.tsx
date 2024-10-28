@@ -50,13 +50,13 @@ export default function Home() {
             </View>
 
             <View style={styles.footer}> {/*Falta las de cada boton y que cambie de color dependiendo de donde se encuentra */}
-                <TouchableOpacity >
+                <TouchableOpacity onPress={() => router.replace("/(auth)")}>
                     <Entypo name="home" size={24} color="green" />
                 </TouchableOpacity>
-                <TouchableOpacity >
+                <TouchableOpacity onPress={() => router.replace("/(category)")}>
                     <FontAwesome5 name="dumbbell" size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity >
+                <TouchableOpacity onPress={() => router.replace("/(history)")}>
                     <FontAwesome5 name="history" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.replace("/(profile)")}>
