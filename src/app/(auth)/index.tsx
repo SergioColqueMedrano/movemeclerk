@@ -8,6 +8,10 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { useSelector } from 'react-redux';
+import { RootState } from "@/store/store";
+
+
 
 type UserResponse = {
     accountId: number;
@@ -26,6 +30,10 @@ export default function Home() {
     const navigation = useNavigation();
     const [userName, setUserName] = useState<string>("");
 
+    const userId = useSelector((state: RootState) => state.user.userId); // Obtén el userId del estado global
+
+
+
     useEffect(() => {
         const fetchUserName = async () => {
             try {
@@ -38,7 +46,7 @@ export default function Home() {
         };
 
         fetchUserName();
-    }, []);
+    }, [userId]);
 
     return (
         <View style={styles.container}>
@@ -48,8 +56,7 @@ export default function Home() {
                     style={styles.image}
                 />
                 <View style={styles.textContainer}>
-                    <Text style={styles.text}>Hola,</Text>
-                    <Text style={styles.name}>{userName || "Usuario"}</Text>
+                    <Text style={styles.text}>Hola, {userName || "Usuario"}</Text>
                 </View>
                 <ButtonExit icon="exit-outline" title="Salir" onPress={() => { signOut(); router.replace("/(public)") }} />
             </View>

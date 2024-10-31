@@ -49,7 +49,7 @@ export default function SignIn() {
       if (email === "admin@admin.com") {
         router.replace("/(exerciseHome)");  // Redirige a la página del administrador
       } else {
-        router.replace("/(category)");  // Redirige a la página regular
+        router.replace("/(auth)");  // Redirige a la página regular
       }
       Alert.alert('Éxito', 'Inicio de sesión exitoso');
     } else {

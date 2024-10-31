@@ -9,22 +9,46 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 import { useSelector } from 'react-redux';
 import UserState from "@/redux/reducers/userReducer";
+import { RootState } from "@/store/store";
+import { useEffect, useState } from "react";
+
+type UserResponse = {
+    accountId: number;
+    userId: number;
+    name: string;
+    gender: string;
+    birthDate: string;
+    profileMediaId: string | null;
+    createdAt: string;
+    updatedAt: string;
+};
 
 export default function Category() {
     const { user } = useUser();
     const { signOut } = useAuth();
     const navigation = useNavigation();
-    
+    const [userName, setUserName] = useState<string>("");
     // Assume the user state structure contains email or other metadata
-    const userName = useSelector((state: any) => {
-        console.log('Redux state:', state); // Log the entire state to get insight
-        return state.user?.userData?.name || ''; // Reflect state structure accurately here
-    });
-
-    console.log('User Name:', userName); // Use for debugging purpose
+   
+    const userId = useSelector((state: RootState) => state.user.userId); // Obtén el userId del estado global
 
 
-    console.log('User Name:', userName); // Log the userName to ensure it's correctly fetched
+
+    useEffect(() => {
+        const fetchUserName = async () => {
+            try {
+                const response = await fetch("https://jz420zgh-3000.brs.devtunnels.ms/accounts/5");
+                const data: UserResponse = await response.json();
+                setUserName(data.name);
+            } catch (error) {
+                console.error("Error al obtener el nombre del usuario:", error);
+            }
+        };
+
+        fetchUserName();
+    }, [userId]);
+
+
 
     return (
         <View style={styles.container}>

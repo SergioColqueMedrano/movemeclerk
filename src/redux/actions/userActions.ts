@@ -87,6 +87,7 @@ export const loginAsync = (email: string, password: string) => {
       if (response.ok) {
         const data = await response.json(); // Procesa los datos de la respuesta
         dispatch(loginSuccess(data)); // Llama a la acción de éxito con los datos recibidos
+        dispatch(setUserId(data.userId)); // Guarda el userId en el estado global
         return true;
       } else {
         const errorData = await response.json();
