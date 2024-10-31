@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { ButtonExit } from "../../../components/ButtonExit";
@@ -8,23 +9,51 @@ import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 
+type UserResponse = {
+    accountId: number;
+    userId: number;
+    name: string;
+    gender: string;
+    birthDate: string;
+    profileMediaId: string | null;
+    createdAt: string;
+    updatedAt: string;
+};
+
 export default function Home() {
-    const {user} = useUser();
-    const {signOut} = useAuth();
+    const { user } = useUser();
+    const { signOut } = useAuth();
     const navigation = useNavigation();
+    const [userName, setUserName] = useState<string>("");
+
+    useEffect(() => {
+        const fetchUserName = async () => {
+            try {
+                const response = await fetch("https://jz420zgh-3000.brs.devtunnels.ms/accounts/5");
+                const data: UserResponse = await response.json();
+                setUserName(data.name);
+            } catch (error) {
+                console.error("Error al obtener el nombre del usuario:", error);
+            }
+        };
+
+        fetchUserName();
+    }, []);
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-            <Image source={user?.imageUrl ? { uri: user.imageUrl } : require('../../../assets/images/avatar.png')} style={styles.image} />
+                <Image
+                    source={user?.imageUrl ? { uri: user.imageUrl } : require('../../../assets/images/avatar.png')}
+                    style={styles.image}
+                />
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>Hola,</Text>
-                    <Text style={styles.name}>{user?.fullName}</Text>
+                    <Text style={styles.name}>{userName || "Usuario"}</Text>
                 </View>
-                <ButtonExit icon="exit-outline" title="Salir" onPress={() => {signOut();router.replace("/(public)")}} />
+                <ButtonExit icon="exit-outline" title="Salir" onPress={() => { signOut(); router.replace("/(public)") }} />
             </View>
 
-            {/* Aquí añadimos los botones en la parte central */}
             <View style={styles.centralButtonsContainer}>
                 <TouchableOpacity style={[styles.button, styles.selectedButton]} onPress={() => router.replace("/(category)")}>
                     <Text style={styles.buttonText}>HIPERTROFIA</Text>
@@ -44,12 +73,12 @@ export default function Home() {
                 <TouchableOpacity style={styles.button}>
                     <Text style={styles.buttonText}>Resistencia Muscular</Text>
                 </TouchableOpacity>
-                <TouchableOpacity >
+                <TouchableOpacity>
                     <AntDesign name="arrowleft" size={24} color="green" />
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.footer}> {/*Falta las de cada boton y que cambie de color dependiendo de donde se encuentra */}
+            <View style={styles.footer}>
                 <TouchableOpacity onPress={() => router.replace("/(auth)")}>
                     <Entypo name="home" size={24} color="green" />
                 </TouchableOpacity>
@@ -121,7 +150,7 @@ const styles = StyleSheet.create({
     },
     selectedButton: {
         borderWidth: 2,
-        borderColor: "#00B37E", // Color del borde del botón seleccionado
+        borderColor: "#00B37E",
     },
     buttonText: {
         color: "#fff",

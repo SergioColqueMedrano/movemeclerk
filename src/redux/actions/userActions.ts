@@ -71,7 +71,7 @@ export const loginAsync = (email: string, password: string) => {
 
     try {
       // Realiza una llamada al servidor para autenticar
-      const response = await fetch('https://5h8llgsm-3000.brs.devtunnels.ms/auth/login', {
+      const response = await fetch('https://jz420zgh-3000.brs.devtunnels.ms/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

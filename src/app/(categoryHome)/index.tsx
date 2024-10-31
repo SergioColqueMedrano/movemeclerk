@@ -22,8 +22,7 @@ export default function categoryHome() {
             <View style={styles.header}>
             <Image source={user?.imageUrl ? { uri: user.imageUrl } : require('../../../assets/images/avatar.png')} style={styles.image} />
                 <View style={styles.textContainer}>
-                    <Text style={styles.text}>Hola,</Text>
-                    <Text style={styles.name}>{user?.fullName}</Text>
+                    <Text style={styles.text}>Hola, Administrador</Text>
                 </View>
                 <ButtonExit icon="exit-outline" title="Salir" onPress={() => {signOut();router.replace("/(public)")}} />
             </View>
@@ -37,7 +36,7 @@ export default function categoryHome() {
                         <TouchableOpacity onPress={() => router.replace("/(categoryEdit)")}>
                             <Octicons name="pencil" size={24} color="white" />
                         </TouchableOpacity >
-                        <TouchableOpacity onPress={() => router.replace("/(exerciseDelete)")}>
+                        <TouchableOpacity onPress={() => router.replace("/(categoryDelete)")}>
                             <Entypo name="cross" size={24} color="white" />
                         </TouchableOpacity>
                     </View>
