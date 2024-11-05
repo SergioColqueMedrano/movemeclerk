@@ -1,23 +1,49 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity, TextInput, Alert } from "react-native";
-import { useAuth, useUser } from "@clerk/clerk-expo";
-import { ButtonExit } from "../../../components/ButtonExit";
+import React, { useState, useEffect } from 'react';
+import { Image, StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, FlatList } from 'react-native';
+import { useAuth, useUser } from '@clerk/clerk-expo';
+import { ButtonExit } from '../../../components/ButtonExit';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { router } from "expo-router";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react"; // Importar useState
+import { router } from 'expo-router';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
+
+// Define el tipo para los elementos en mediaList
+type MediaItem = {
+    mediaId: number;
+    description: string;
+};
 
 export default function ExerciseCreate() {
     const { user } = useUser();
     const { signOut } = useAuth();
     const navigation = useNavigation();
 
-    // Crear los estados para capturar los inputs
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [mediaList, setMediaList] = useState<MediaItem[]>([]);
+    const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null);
+
+    // Cargar lista de media al montar el componente
+    useEffect(() => {
+        const fetchMediaList = async () => {
+            try {
+                const response = await fetch("https://jz420zgh-3000.brs.devtunnels.ms/media");
+                if (response.ok) {
+                    const data: MediaItem[] = await response.json();
+                    setMediaList(data);
+                } else {
+                    Alert.alert("Error", "No se pudo cargar la lista de media");
+                }
+            } catch (error) {
+                Alert.alert("Error", "Hubo un problema al conectar con el servidor");
+            }
+        };
+
+        fetchMediaList();
+    }, []);
 
     // Función para manejar el POST
     const handleCreateExercise = async () => {
@@ -30,6 +56,7 @@ export default function ExerciseCreate() {
                 body: JSON.stringify({
                     name: name,
                     description: description,
+                    mediaId: selectedMediaId ? parseInt(selectedMediaId) : null, // Convertimos a integer
                 }),
             });
 
@@ -56,7 +83,7 @@ export default function ExerciseCreate() {
                     placeholderTextColor="#ccc"
                     style={styles.input}
                     value={name}
-                    onChangeText={setName} // Capturar valor
+                    onChangeText={setName}
                 />
                 {/* Input para descripción */}
                 <TextInput
@@ -64,7 +91,32 @@ export default function ExerciseCreate() {
                     placeholderTextColor="#ccc"
                     style={styles.input}
                     value={description}
-                    onChangeText={setDescription} // Capturar valor
+                    onChangeText={setDescription}
+                />
+                {/* Input para Media ID, permitiendo edición manual */}
+                <TextInput
+                    placeholder="Media ID"
+                    placeholderTextColor="#ccc"
+                    style={styles.input}
+                    value={selectedMediaId ? selectedMediaId.toString() : ''}
+                    onChangeText={(text) => setSelectedMediaId(text)}
+                />
+
+                {/* Lista de media para seleccionar mediaId */}
+                <FlatList
+                    data={mediaList}
+                    keyExtractor={(item) => item.mediaId.toString()}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={[
+                                styles.mediaItem,
+                                item.mediaId.toString() === selectedMediaId && styles.selectedMediaItem
+                            ]}
+                            onPress={() => setSelectedMediaId(item.mediaId.toString())}
+                        >
+                            <Text style={styles.mediaText}>{item.description}</Text>
+                        </TouchableOpacity>
+                    )}
                 />
 
                 {/* Botón para crear ejercicio */}
@@ -99,14 +151,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 0,
-        justifyContent: "flex-start", 
+        justifyContent: "flex-start",
         backgroundColor: "#202024",
     },
-    backButton: {
-        position: 'absolute',
-        top: 40, 
-        left: 35, 
-        zIndex: 1,  
+    mediaItem: {
+        padding: 15,
+        marginVertical: 5,
+        backgroundColor: "#323238",
+        borderRadius: 5,
+    },
+    selectedMediaItem: {
+        backgroundColor: "#00875F",
+    },
+    mediaText: {
+        color: "#fff",
+        fontSize: 16,
     },
     buttonGreen: {
         flexDirection: 'row',
@@ -119,14 +178,6 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         alignItems: "center",
     },
-    header: {
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    textContainer: {
-        flexDirection: "column",
-        alignItems: "flex-start",
-    },
     textHeader: {
         margin: 30,
         fontSize: 20,
@@ -134,44 +185,12 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontWeight: 'bold',
     },
-    Text: {
-        margin: 30,
-        fontSize: 16,
-        color: '#fff',
-        textAlign: "left",
-    },
-    name: {
-        fontSize: 16,
-        color: '#fff',
-        fontWeight: "bold",
-        textAlign: "left",
-    },
-    image: {
-        width: 148,
-        height: 148,
-        borderRadius: 100,
-        backgroundColor: "#323238",
-        borderWidth: 4,
-        borderColor: "#323238",
-    },
     centralButtonsContainer: {
         justifyContent: "flex-start",
         padding: 30,
         alignItems: "center",
         height: 665,
         backgroundColor: "#121214",
-    },
-    button: {
-        width: "100%",
-        padding: 15,
-        marginVertical: 8,
-        backgroundColor: "#00875F",
-        borderRadius: 6,
-        alignItems: "center",
-    },
-    selectedButton: {
-        borderWidth: 2,
-        borderColor: "#00B37E",
     },
     buttonText: {
         color: "#fff",
