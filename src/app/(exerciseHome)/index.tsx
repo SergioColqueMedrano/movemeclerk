@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity, FlatList } from "react-native";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { ButtonExit } from "../../../components/ButtonExit";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -28,39 +28,46 @@ export default function ExerciseHome() {
             .catch(error => console.error('Error fetching exercises:', error));
     }, []);
 
+    // Función para renderizar cada ejercicio en el FlatList
+    const renderExercise = ({ item }) => (
+        <View style={styles.button} key={item.exerciseId}>                    
+            <Text style={styles.buttonNumber}>{item.name}</Text>
+            <View style={styles.div}>
+                <TouchableOpacity onPress={() => router.push({ pathname: "/(exerciseEdit)", params: { exerciseId: item.exerciseId } })}>
+                    <Octicons name="pencil" size={24} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push({ pathname: "/(exerciseDelete)", params: { exerciseId: item.exerciseId } })}>
+                    <Entypo name="cross" size={24} color="white" />
+                </TouchableOpacity>
+
+
+            </View>
+        </View>
+    );
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-            <Image source={user?.imageUrl ? { uri: user.imageUrl } : require('../../../assets/images/avatar.png')} style={styles.image} />
+                <Image source={user?.imageUrl ? { uri: user.imageUrl } : require('../../../assets/images/avatar.png')} style={styles.image} />
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>Hola, Administrador</Text>
                 </View>
                 <ButtonExit icon="exit-outline" title="Salir" onPress={() => {signOut();router.replace("/(public)")}} />
             </View>
 
-            {/* Aquí añadimos los botones dinámicos en la parte central */}
-            <ScrollView contentContainerStyle={styles.centralButtonsContainer}>
-                {
-                    exercises.map((exercise, index) => (
-                        <View style={styles.button} key={exercise.id}>                    
-                            <Text style={styles.buttonNumber}>{exercise.name}</Text>  {/* Mostrar el nombre del ejercicio */}
-                            <View style={styles.div}>
-                                <TouchableOpacity onPress={() => router.replace("/(exerciseEdit)", { exerciseId: exercise.id })}>
-                                    <Octicons name="pencil" size={24} color="white" />
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => router.replace("/(exerciseDelete)", { exerciseId: exercise.id })}>
-                                    <Entypo name="cross" size={24} color="white" />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    ))
+            {/* FlatList para la lista de ejercicios */}
+            <FlatList
+                data={exercises}
+                renderItem={renderExercise}
+                keyExtractor={(item) => item.exerciseId.toString()}
+                contentContainerStyle={styles.centralButtonsContainer}
+                ListFooterComponent={
+                    <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseCreate)")}>
+                        <FontAwesome name="plus" size={30} color="white" />
+                        <Text style={styles.buttonText}>Agregar Ejercicio</Text>
+                    </TouchableOpacity>
                 }
-                
-                <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseCreate)")}>
-                    <FontAwesome name="plus" size={30} color="white" />
-                    <Text style={styles.buttonText}>Agregar Ejercicio</Text>
-                </TouchableOpacity>
-            </ScrollView>
+            />
 
             <View style={styles.footer}>
                 <TouchableOpacity onPress={() => router.replace("/(categoryHome)")}>
@@ -112,9 +119,9 @@ const styles = StyleSheet.create({
         borderColor: "#323238",
     },
     centralButtonsContainer: {
-        padding: 30,
+        paddingHorizontal: 20,
         alignItems: "center",
-        backgroundColor: "#121214",
+        paddingBottom: 120, // Espacio para el menú inferior
     },
     div: {
         flexDirection: 'row',
@@ -132,15 +139,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: "center",
         width: 364,
-        padding: 30,
+        padding: 20, // Reducción del padding para que no ocupe demasiado espacio
         marginVertical: 8,
         backgroundColor: "#00875F",
         borderRadius: 6,
         alignItems: "center",
+        marginBottom: 20, // Espacio extra para evitar superposición con el menú
     },
     buttonText: {
         color: "#fff",
-        paddingTop: 10,
+        paddingLeft: 10,
         fontSize: 16,
     },
     buttonNumber: {
@@ -151,7 +159,7 @@ const styles = StyleSheet.create({
     footer: {
         padding: 32,
         position: "absolute",
-        bottom: 40,
+        bottom: 0,
         left: 32,
         right: 32,
         flexDirection: "row",

@@ -1,58 +1,62 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { ButtonExit } from "../../../components/ButtonExit";
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Entypo from '@expo/vector-icons/Entypo';
-import { useNavigation } from '@react-navigation/native';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { useRoute, RouteProp } from "@react-navigation/native";
 import { router } from "expo-router";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
+type ExerciseDeleteRouteParams = {
+    params: {
+        exerciseId: string;
+    };
+};
 
 export default function ExerciseDelete() {
-    const {user} = useUser();
-    const {signOut} = useAuth();
-    const navigation = useNavigation();
+    const { user } = useUser();
+    const { signOut } = useAuth();
+    const route = useRoute<RouteProp<ExerciseDeleteRouteParams>>();
+    const exerciseId = route.params?.exerciseId;
+
+    const handleDeleteExercise = () => {
+        if (!exerciseId) {
+            console.error("No se proporcionó un exerciseId");
+            alert("Error: No se pudo identificar el ejercicio.");
+            return;
+        }
+
+        fetch(`https://jz420zgh-3000.brs.devtunnels.ms/exercises/${exerciseId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al eliminar el ejercicio');
+                }
+                return response.json();
+            })
+            .then(() => {
+                console.log('Ejercicio eliminado correctamente');
+                router.push("/(exerciseHome)");
+            })
+            .catch(error => {
+                console.error('Error al eliminar el ejercicio:', error);
+                alert("Error al eliminar el ejercicio. Intente nuevamente.");
+            });
+    };
 
     return (
         <View style={styles.container}>
             <Text style={styles.textHeader}>Eliminar Ejercicio</Text>
             
-
-            {/* Aquí añadimos los botones en la parte central */}
             <View style={styles.centralButtonsContainer}>
-                
-            <Text style={styles.Title}>¿Está seguro que desea eliminar este ejercicio?</Text>
-                <View style={styles.buttons}>
-                    <TouchableOpacity style={styles.buttonRed} onPress={() => router.replace("/(exerciseHome)")}>
-                        <Text style={styles.buttonText}>Cancelar</Text>
-                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseHome)")}>
-                         <Text style={styles.buttonText}>Aceptar</Text>
-                    </TouchableOpacity>
-                </View>
-                
-                
-               
-               
+                <Text style={styles.warningText}>
+                    ¿Está seguro de que desea eliminar este ejercicio?
+                </Text>
 
-
-
-            </View>
-
-            <View style={styles.footer}>
-                <TouchableOpacity onPress={() => router.replace("/(categoryHome)")}>
-                    <Entypo name="home" size={24} color="white" />
+                <TouchableOpacity style={styles.buttonRed} onPress={handleDeleteExercise}>
+                    <Text style={styles.buttonText}>Eliminar Ejercicio</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.replace("/(categoryCreate)")}>
-                    <MaterialIcons name="bookmark-add" size={24} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
-                    <Feather name="list" size={24} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
-                    <FontAwesome5 name="dumbbell" size={24} color="green" />
+
+                <TouchableOpacity style={styles.backButton} onPress={() => router.replace("/(exerciseHome)")}>
+                    <AntDesign name="arrowleft" size={24} color="green" />
                 </TouchableOpacity>
             </View>
         </View>
@@ -62,131 +66,48 @@ export default function ExerciseDelete() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 0,
-        justifyContent: "flex-start", 
         backgroundColor: "#202024",
-    },
-    buttons: {
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        //gap
-
     },
     backButton: {
         position: 'absolute',
-        top: 40,  // Ajusta esta distancia según sea necesario
-        left: 35,  // Ajusta esta distancia según sea necesario
-        zIndex: 1,  // Asegura que esté por encima de otros elementos si es necesario
-    },
-    buttonGreen: {
-        flexDirection: 'row',
-        
-        justifyContent: "center", // Espacia uniformemente los botones
-        paddingHorizontal: 16,
-        width: 174,
-        height: 56,
-        backgroundColor: "#00875F",
-        borderRadius: 6,
-        marginRight: 10, 
+        top: 40,
+        left: 20,
+        padding: 10,
     },
     buttonRed: {
-        flexDirection: 'row',
-        
-        justifyContent: "center", // Espacia uniformemente los botones
+        justifyContent: "center",
         paddingHorizontal: 16,
-        width: 174,
-        height: 56,
+        width: '100%',
+        padding: 20,
+        marginVertical: 8,
         backgroundColor: "#870000",
         borderRadius: 6,
-        marginRight: 10, 
-    },
-    header: {
-        justifyContent: "space-between",
         alignItems: "center",
-    },
-    textContainer: {
-        flexDirection: "column",
-        alignItems: "flex-start",
     },
     textHeader: {
-        margin: 30,
-        fontSize: 20,
+        marginTop: 50,
+        fontSize: 22,
         color: '#fff',
         textAlign: "center",
         fontWeight: 'bold',
-    },
-    Text: {
-        margin: 30,
-        fontSize: 16,
-        color: '#fff',
-        textAlign: "left",
-    },
-    Title: {
-        margin: 30,
-        fontSize: 32,
-        color: '#fff',
-        textAlign: "center",
-        fontWeight: 'bold',
-    },
-    name: {
-        fontSize: 16,
-        color: '#fff',
-        fontWeight: "bold",
-        textAlign: "left",
-    },
-    image: {
-        width: 148,
-        height: 148,
-        borderRadius: 100,
-        backgroundColor: "#323238",
-        borderWidth: 4,
-        borderColor: "#323238",
     },
     centralButtonsContainer: {
-        justifyContent: "center", // Centra los elementos verticalmente
-        padding: 30,
+        justifyContent: "center",
         alignItems: "center",
-        height: 665,
+        padding: 20,
         backgroundColor: "#121214",
+        flex: 1,
     },
-    button: {
-        width: "100%",
-        padding: 15,
-        marginVertical: 8,
-        backgroundColor: "#00875F",
-        borderRadius: 6,
-        alignItems: "center",
-    },
-    selectedButton: {
-        borderWidth: 2,
-        borderColor: "#00B37E", // Color del borde del botón seleccionado
+    warningText: {
+        fontSize: 18,
+        color: '#fff',
+        textAlign: "center",
+        marginBottom: 20,
+        fontWeight: 'bold',
     },
     buttonText: {
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
-        marginTop: 15, // Margen inferior para separar el título de los botones
     },
-    buttonTextwhite: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    footer: {
-        padding: 32,
-        position: "absolute",
-        bottom: 40,
-        left: 32,
-        right: 32,
-        flexDirection: "row",
-        justifyContent: "space-between",
-    },
-    input: {
-        width: '100%',
-        padding: 20,
-        marginVertical: 5,
-        backgroundColor: '#202024', // Color negro para los inputs
-        borderRadius: 5,
-        color: '#fff',
-      },
 });
