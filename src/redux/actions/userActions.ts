@@ -1,6 +1,6 @@
 // src/redux/actions/userActions.ts
 import { Dispatch } from 'redux';
-
+import { BASE_URL } from '@env';
 // Definimos las constantes de acción
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_OUT = 'SIGN_OUT';
@@ -9,6 +9,8 @@ export const SET_USER_ID = 'SET_USER_ID';
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
+
+
 
 // Interfaz para el tipo de datos del usuario
 interface UserData {
@@ -70,8 +72,9 @@ export const loginAsync = (email: string, password: string) => {
     dispatch(loginRequest());
 
     try {
+      
       // Realiza una llamada al servidor para autenticar
-      const response = await fetch('https://jz420zgh-3000.brs.devtunnels.ms/auth/login', {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -12,6 +12,8 @@ import Feather from '@expo/vector-icons/Feather';
 import Octicons from '@expo/vector-icons/Octicons';
 import { useState, useEffect } from "react";
 
+import { BASE_URL } from '@env';
+
 export default function ExerciseHome() {
     const { user } = useUser();
     const { signOut } = useAuth();
@@ -22,7 +24,7 @@ export default function ExerciseHome() {
 
     // useEffect para obtener los ejercicios de la API cuando el componente se monta
     useEffect(() => {
-        fetch('https://jz420zgh-3000.brs.devtunnels.ms/exercises')
+        fetch(`${BASE_URL}/exercises`)
             .then(response => response.json())
             .then(data => setExercises(data))
             .catch(error => console.error('Error fetching exercises:', error));

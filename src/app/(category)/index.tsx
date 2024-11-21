@@ -12,6 +12,8 @@ import UserState from "@/redux/reducers/userReducer";
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 
+import { BASE_URL } from '@env';
+
 type UserResponse = {
     accountId: number;
     userId: number;
@@ -37,7 +39,7 @@ export default function Category() {
     useEffect(() => {
         const fetchUserName = async () => {
             try {
-                const response = await fetch("https://jz420zgh-3000.brs.devtunnels.ms/accounts/5");
+                const response = await fetch(`${BASE_URL}/accounts/5`);
                 const data: UserResponse = await response.json();
                 setUserName(data.name);
             } catch (error) {

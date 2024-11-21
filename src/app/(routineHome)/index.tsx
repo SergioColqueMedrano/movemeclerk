@@ -11,6 +11,8 @@ import Feather from '@expo/vector-icons/Feather';
 import Octicons from '@expo/vector-icons/Octicons';
 import { useState, useEffect } from "react";
 
+import { BASE_URL } from '@env';
+
 export default function RoutineHome() {
     const { user } = useUser();
     const { signOut } = useAuth();
@@ -20,7 +22,7 @@ export default function RoutineHome() {
 
     // useEffect para obtener las rutinas de la API cuando el componente se monta
     useEffect(() => {
-        fetch('https://jz420zgh-3000.brs.devtunnels.ms/routines')
+        fetch(`${BASE_URL}/routines`)
             .then(response => response.json())
             .then(data => setRoutines(data))
             .catch(error => console.error('Error fetching routines:', error));

@@ -12,6 +12,8 @@ import DumbbellIcon from '../../../components/DumbbellIcon';
 import { ThemedView } from '../../../components/ThemedView';
 import { ThemedText } from '../../../components/ThemedText';
 
+
+
 WebBrowser.maybeCompleteAuthSession();
 
 export default function SignIn() {
@@ -54,6 +56,7 @@ export default function SignIn() {
       Alert.alert('Éxito', 'Inicio de sesión exitoso');
     } else {
       Alert.alert('Error', 'Credenciales inválidas o falló el inicio de sesión');
+      console.log('BASE_URL:', process.env.BASE_URL); 
     }
   };
 
@@ -90,6 +93,7 @@ export default function SignIn() {
         />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Ingresar</Text>
+          
         </TouchableOpacity>
         <Button icon="logo-google" title="Entrar con Google" onPress={onGoogleSignIn} isLoading={isLoading} />
         <Text style={styles.linkText}>¿Has olvidado tu contraseña?</Text>

@@ -10,6 +10,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from 'expo-router';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 
+import { BASE_URL } from '@env';
 // Define el tipo para los elementos en mediaList
 type MediaItem = {
     mediaId: number;
@@ -30,7 +31,7 @@ export default function ExerciseCreate() {
     useEffect(() => {
         const fetchMediaList = async () => {
             try {
-                const response = await fetch("https://jz420zgh-3000.brs.devtunnels.ms/media");
+                const response = await fetch(`${BASE_URL}/media`);
                 if (response.ok) {
                     const data: MediaItem[] = await response.json();
                     setMediaList(data);
@@ -48,7 +49,7 @@ export default function ExerciseCreate() {
     // Función para manejar el POST
     const handleCreateExercise = async () => {
         try {
-            const response = await fetch("https://jz420zgh-3000.brs.devtunnels.ms/exercises", {
+            const response = await fetch(`${BASE_URL}/exercises`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',

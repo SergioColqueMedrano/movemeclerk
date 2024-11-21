@@ -4,6 +4,8 @@ import { useRoute, RouteProp } from "@react-navigation/native";
 import { router } from "expo-router";
 import AntDesign from '@expo/vector-icons/AntDesign';
 
+import { BASE_URL } from '@env';
+
 type ExerciseDeleteRouteParams = {
     params: {
         exerciseId: string;
@@ -23,7 +25,7 @@ export default function ExerciseDelete() {
             return;
         }
 
-        fetch(`https://jz420zgh-3000.brs.devtunnels.ms/exercises/${exerciseId}`, {
+        fetch(`${BASE_URL}/exercises/${exerciseId}`, {
             method: 'DELETE',
         })
             .then(response => {

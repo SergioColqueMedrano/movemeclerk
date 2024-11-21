@@ -1,92 +1,219 @@
 import React, { useState } from "react";
-import { Image, StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    Alert,
+    ScrollView,
+    TextInput,
+} from "react-native";
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import Entypo from '@expo/vector-icons/Entypo';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
+
+import { BASE_URL } from '@env';
 
 export default function RoutineCreate() {
     const { user } = useUser();
     const { signOut } = useAuth();
-    const [selectedExercise, setSelectedExercise] = useState('');
+
+    const [name, setName] = useState("");
+    const [gender, setGender] = useState("male");
+    const [daysCount, setDaysCount] = useState(1);
+    const [currentDay, setCurrentDay] = useState(1);
+    const [routine, setRoutine] = useState(
+        Array.from({ length: daysCount }, () => ({ exercises: [] }))
+    );
+
+    const [selectedExercises, setSelectedExercises] = useState([]);
+
+    // Función para manejar el POST
+    const handleCreateRoutine = async () => {
+        try {
+            const response = await fetch(
+                `${BASE_URL}/routines`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        gender: gender,
+                        daysCount: daysCount,
+                        exercises: routine,
+                        categoryId: 1, // Ajustar según la lógica necesaria
+                    }),
+                }
+            );
+
+            if (response.ok) {
+                Alert.alert("Éxito", "Rutina creada correctamente");
+                router.replace("/(routineHome)");
+            } else {
+                const errorData = await response.json();
+                Alert.alert("Error", errorData.message || "Error al crear la rutina");
+            }
+        } catch (error) {
+            Alert.alert("Error", "Hubo un problema al conectar con el servidor");
+        }
+    };
+
+    const handleAddExercise = (exercise) => {
+        setRoutine((prevRoutine) => {
+            const updatedRoutine = [...prevRoutine];
+            updatedRoutine[currentDay - 1].exercises.push(exercise);
+            return updatedRoutine;
+        });
+    };
+
+    const updateDaysCount = (count) => {
+        setDaysCount(count);
+        setRoutine(Array.from({ length: count }, () => ({ exercises: [] })));
+        setCurrentDay(1); // Reiniciar al día 1
+    };
+
+    const renderExercises = () => {
+        const exercises = routine[currentDay - 1]?.exercises || [];
+        return exercises.length > 0 ? (
+            exercises.map((exercise, index) => (
+                <TouchableOpacity key={index} style={styles.exerciseContainer}>
+                    <Text style={styles.exerciseTitle}>{exercise.category}</Text>
+                    <Text style={styles.exerciseDescription}>{exercise.name}</Text>
+                </TouchableOpacity>
+            ))
+        ) : (
+            <Text style={styles.noExercisesText}>No se han agregado ejercicios.</Text>
+        );
+    };
 
     return (
         <View style={styles.container}>
+            {/* Header */}
             <Text style={styles.textHeader}>Crear Rutina</Text>
-            
-            {/* Campos de entrada de la rutina */}
-            <View style={styles.centralButtonsContainer}>
-                <TextInput
-                    placeholder="Nombre Descripción"
-                    placeholderTextColor="#ccc"
-                    style={styles.input}
-                    autoCapitalize="words" // Capitaliza nombres automáticamente
-                />
-                <TextInput
-                    placeholder="Sexo"
-                    placeholderTextColor="#ccc"
-                    style={styles.input}
-                    autoCapitalize="none"
-                />
 
-                {/* Botón para agregar ejercicios */}
-                <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(exerciseList)")}>
-                    <Text style={styles.buttonText}>Agregar ejercicio +</Text>
-                </TouchableOpacity>
+            {/* Inputs */}
+            <TextInput
+                placeholder="Nombre de la rutina"
+                placeholderTextColor="#ccc"
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+            />
+
+            {/* Selector de género */}
+            <View style={styles.input}>
+                <View style={styles.genderContainer}>
+                    <TouchableOpacity
+                        style={[
+                            styles.genderOption,
+                            gender === "male" && styles.genderOptionSelected,
+                        ]}
+                        onPress={() => setGender("male")}
+                    >
+                        <Text
+                            style={[
+                                styles.genderText,
+                                gender === "male" && styles.genderTextSelected,
+                            ]}
+                        >
+                            Hombre
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[
+                            styles.genderOption,
+                            gender === "female" && styles.genderOptionSelected,
+                        ]}
+                        onPress={() => setGender("female")}
+                    >
+                        <Text
+                            style={[
+                                styles.genderText,
+                                gender === "female" && styles.genderTextSelected,
+                            ]}
+                        >
+                            Mujer
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
 
-            {/* ScrollView para la lista de ejercicios seleccionados */}
+            {/* Selector de cantidad de días */}
+            <View style={styles.input}>
+                <View style={styles.genderContainer}>
+                    {[1, 2, 3, 4, 5].map((day) => (
+                        <TouchableOpacity
+                            key={day}
+                            style={[
+                                styles.genderOption,
+                                daysCount === day && styles.genderOptionSelected,
+                            ]}
+                            onPress={() => updateDaysCount(day)}
+                        >
+                            <Text
+                                style={[
+                                    styles.genderText,
+                                    daysCount === day && styles.genderTextSelected,
+                                ]}
+                            >
+                                {day} día{day > 1 ? "s" : ""}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </View>
+
+            {/* Selector de día activo */}
+            <View style={styles.input}>
+                <ScrollView horizontal>
+                    {Array.from({ length: daysCount }, (_, i) => i + 1).map((day) => (
+                        <TouchableOpacity
+                            key={day}
+                            style={[
+                                styles.dayOption,
+                                currentDay === day && styles.dayOptionSelected,
+                            ]}
+                            onPress={() => setCurrentDay(day)}
+                        >
+                            <Text
+                                style={[
+                                    styles.dayText,
+                                    currentDay === day && styles.dayTextSelected,
+                                ]}
+                            >
+                                Día {day}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            </View>
+
+            {/* Botón para agregar ejercicios */}
+            <TouchableOpacity
+                style={styles.buttonGreen}
+                onPress={() =>
+                    handleAddExercise({
+                        category: "Espalda",
+                        name: `Ejercicio para día ${currentDay}`,
+                    })
+                }
+            >
+                <Text style={styles.buttonText}>Agregar ejercicio +</Text>
+            </TouchableOpacity>
+
+            {/* Lista de ejercicios del día actual */}
             <View style={styles.scroll}>
-            <ScrollView style={styles.scrollContainer}>
-                <TouchableOpacity style={styles.exerciseContainer}>
-                    <Text style={styles.exerciseTitle}>Espalda</Text>
-                    <Text style={styles.exerciseDescription}>Ejercicio 1</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.exerciseContainer}>
-                    <Text style={styles.exerciseTitle}>Espalda</Text>
-                    <Text style={styles.exerciseDescription}>Ejercicio 4</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.exerciseContainer}>
-                    <Text style={styles.exerciseTitle}>Espalda</Text>
-                    <Text style={styles.exerciseDescription}>Ejercicio 7</Text>
-                </TouchableOpacity>
-                
-            </ScrollView>
-            </View>
-            
-
-            {/* Botón para crear la rutina */}
-            <View style={styles.centralButtonsContainer}>
-                <TouchableOpacity style={styles.buttonGreen} onPress={() => router.replace("/(routineHome)")}>
-                    <Text style={styles.buttonText}>Crear Rutina</Text>
-                </TouchableOpacity>
-
-                {/* Botón para regresar */}
-                <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
-                    <AntDesign name="arrowleft" size={24} color="green" />
-                </TouchableOpacity>
+                <ScrollView>{renderExercises()}</ScrollView>
             </View>
 
-            {/* Footer con navegación */}
-            <View style={styles.footer}> {/*Falta las de cada boton y que cambie de color dependiendo de donde se encuentra */}
-                <TouchableOpacity onPress={() => router.replace("/(categoryHome)")}>
-                    <Entypo name="home" size={24} color="white" />
-                </TouchableOpacity>
-                
-                <TouchableOpacity onPress={() => router.replace("/(categoryCreate)")}>
-                    <MaterialIcons name="bookmark-add" size={24} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.replace("/(routineHome)")}>
-                    <Feather name="list" size={24} color="green" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.replace("/(exerciseHome)")}>
-                    <FontAwesome5 name="dumbbell" size={24} color="white" />
-                </TouchableOpacity>
-            </View>
+            {/* Botón para guardar la rutina */}
+            <TouchableOpacity
+                style={styles.buttonGreen}
+                onPress={handleCreateRoutine}
+            >
+                <Text style={styles.buttonText}>Guardar Rutina</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -95,42 +222,91 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 0,
-        justifyContent: "flex-start", 
+        justifyContent: "flex-start",
         backgroundColor: "#202024",
     },
+    textHeader: {
+        margin: 30,
+        fontSize: 20,
+        color: "#fff",
+        textAlign: "center",
+        fontWeight: "bold",
+    },
+    input: {
+        width: "100%",
+        padding: 20,
+        marginVertical: 5,
+        backgroundColor: "#202024",
+        borderRadius: 5,
+        color: "#fff",
+    },
+    scroll: {
+        width: "100%",
+        height: 200,
+        paddingHorizontal: 30,
+    },
     buttonGreen: {
-        flexDirection: 'row',
+        flexDirection: "row",
         justifyContent: "center",
         paddingHorizontal: 16,
-        width: 364, // Ajusta el ancho según el diseño
-        padding: 30,
+        width: "100%",
+        padding: 20,
         marginVertical: 8,
         backgroundColor: "#00875F",
         borderRadius: 6,
         alignItems: "center",
     },
-    textHeader: {
-        margin: 30,
-        fontSize: 20,
-        color: '#fff',
-        textAlign: "center",
-        fontWeight: 'bold',
+    buttonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
     },
-    centralButtonsContainer: {
-        justifyContent: "flex-start",
-        padding: 30,
+    genderContainer: {
+        flexDirection: "row",
+        justifyContent: "space-around",
         alignItems: "center",
+    },
+    genderOption: {
+        flex: 1,
+        alignItems: "center",
+        padding: 15,
+        marginHorizontal: 5,
+        backgroundColor: "#202024",
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#ccc",
+    },
+    genderOptionSelected: {
+        borderColor: "#00875F",
         backgroundColor: "#121214",
     },
-    scroll: {
-        width: 361,
-        height: 177,
-        alignItems: "center",
+    genderText: {
+        color: "#ccc",
+        fontSize: 16,
+        fontWeight: "bold",
     },
-    scrollContainer: {
-        flex: 1,
-        marginVertical: 60,
-        paddingHorizontal: 80, // Asegura que el contenido esté alineado con el botón
+    genderTextSelected: {
+        color: "#fff",
+    },
+    dayOption: {
+        padding: 10,
+        marginHorizontal: 5,
+        backgroundColor: "#202024",
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#ccc",
+    },
+    dayOptionSelected: {
+        borderColor: "#00875F",
+        backgroundColor: "#121214",
+    },
+    dayText: {
+        color: "#ccc",
+        fontSize: 16,
+    },
+    dayTextSelected: {
+        color: "#fff",
+        fontWeight: "bold",
     },
     exerciseContainer: {
         padding: 10,
@@ -149,26 +325,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#ccc",
     },
-    buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    input: {
-        width: '100%',
-        padding: 20,
-        marginVertical: 5,
-        backgroundColor: '#202024', // Color negro para los inputs
-        borderRadius: 5,
-        color: '#fff',
-    },
-    footer: {
-        padding: 32,
-        position: "absolute",
-        bottom: 40,
-        left: 32,
-        right: 32,
-        flexDirection: "row",
-        justifyContent: "space-between",
+    noExercisesText: {
+        fontSize: 14,
+        color: "#ccc",
+        textAlign: "center",
     },
 });

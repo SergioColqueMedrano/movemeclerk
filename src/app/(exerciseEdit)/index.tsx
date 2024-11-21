@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux';
 import { router } from "expo-router";
 import AntDesign from '@expo/vector-icons/AntDesign';
 
+import { BASE_URL } from '@env';
+
 type ExerciseEditRouteParams = {
     params: {
         exerciseId: string;
@@ -24,7 +26,7 @@ export default function ExerciseEdit() {
 
     useEffect(() => {
         if (exerciseId) {
-            fetch(`https://jz420zgh-3000.brs.devtunnels.ms/exercises/${exerciseId}`)
+            fetch(`${BASE_URL}/${exerciseId}`)
                 .then(response => response.json())
                 .then(data => {
                     setExerciseName(data.name || "");
@@ -36,7 +38,7 @@ export default function ExerciseEdit() {
 
     const handleUpdateExercise = () => {
         if (exerciseId) {
-            fetch(`https://jz420zgh-3000.brs.devtunnels.ms/exercises/${exerciseId}`, {
+            fetch(`${BASE_URL}/exercises/${exerciseId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

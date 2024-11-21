@@ -9,6 +9,8 @@ import DumbbellIcon from '../../../components/DumbbellIcon';
 import { ThemedText } from '../../../components/ThemedText';
 import { Picker } from '@react-native-picker/picker';
 
+import { BASE_URL } from '@env';
+
 WebBrowser.maybeCompleteAuthSession();
 
 export default function SignIn() {
@@ -47,7 +49,7 @@ export default function SignIn() {
     }
 
     try {
-      const response = await fetch('https://jz420zgh-3000.brs.devtunnels.ms/auth/register', {
+      const response = await fetch(`${BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

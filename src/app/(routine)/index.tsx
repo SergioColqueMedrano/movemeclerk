@@ -12,7 +12,7 @@ import { router } from "expo-router";
 import { useSelector } from 'react-redux';
 import { RootState } from "@/store/store";
 
-
+import { BASE_URL } from '@env';
 
 type UserResponse = {
     accountId: number;
@@ -67,7 +67,7 @@ export default function Routine() {
     useEffect(() => {
         const fetchUserName = async () => {
             try {
-                const response = await fetch("https://jz420zgh-3000.brs.devtunnels.ms/accounts/5");
+                const response = await fetch(`${BASE_URL}/accounts/5`);
                 const data: UserResponse = await response.json();
                 setUserName(data.name);
             } catch (error) {
